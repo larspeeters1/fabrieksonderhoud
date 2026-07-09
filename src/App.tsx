@@ -5,7 +5,8 @@ import { AuthProvider } from './contexts/AuthContext'
 import { useAuth } from './hooks/useAuth'
 import { theme } from './theme/theme'
 import LoginPage from './pages/LoginPage'
-import HomePage from './pages/HomePage'
+import SiteOverviewPage from './pages/SiteOverviewPage'
+import HallDetailPage from './pages/HallDetailPage'
 import NotFoundPage from './pages/NotFoundPage'
 import AppLayout from './components/layout/AppLayout'
 
@@ -21,7 +22,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<SiteOverviewPage />} />
+        <Route path="/halls/:hallId" element={<HallDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

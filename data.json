@@ -1,0 +1,27 @@
+{
+  "halls": [
+    { "id": "h1", "name": "Assemblagehal", "x": 40, "y": 40, "width": 300, "height": 200 },
+    { "id": "h2", "name": "Verpakkingshal", "x": 400, "y": 40, "width": 280, "height": 220 },
+    { "id": "h3", "name": "Onderhoudshal", "x": 40, "y": 300, "width": 320, "height": 180 },
+    { "id": "h4", "name": "Opslaghal", "x": 420, "y": 320, "width": 260, "height": 200 }
+  ],
+  "devices": [
+    { "id": "d1", "name": "Lasrobot 1", "category": "machine", "hallId": "h1", "x": 60, "y": 60, "serialNumber": "SN-1001" },
+    { "id": "d2", "name": "Lasrobot 2", "category": "machine", "hallId": "h1", "x": 150, "y": 60, "serialNumber": "SN-1002" },
+    { "id": "d3", "name": "Transportband A", "category": "band", "hallId": "h1", "x": 60, "y": 140, "serialNumber": "SN-1003" },
+    { "id": "d4", "name": "Verpakkingsmachine 1", "category": "machine", "hallId": "h2", "x": 420, "y": 60, "serialNumber": "SN-2001" },
+    { "id": "d5", "name": "Transportband B", "category": "band", "hallId": "h2", "x": 420, "y": 140, "serialNumber": "SN-2002" },
+    { "id": "d6", "name": "TL-verlichting 1", "category": "lamp", "hallId": "h3", "x": 60, "y": 320, "serialNumber": "SN-3001" },
+    { "id": "d7", "name": "Compressor 1", "category": "machine", "hallId": "h3", "x": 150, "y": 320, "serialNumber": "SN-3002" },
+    { "id": "d8", "name": "Stellingrek sensor", "category": "lamp", "hallId": "h4", "x": 440, "y": 340, "serialNumber": "SN-4001" }
+  ],
+  "actions": [
+    { "id": "a1", "deviceId": "d1", "type": "controle", "deadline": "2026-07-01", "status": "open", "description": "Periodieke controle lasrobot" },
+    { "id": "a2", "deviceId": "d2", "type": "vervanging", "deadline": "2026-07-09", "status": "open", "description": "Vervanging slijtonderdeel" },
+    { "id": "a3", "deviceId": "d3", "type": "herstelling", "deadline": "2026-08-01", "status": "open", "description": "Herstelling aandrijfmotor" },
+    { "id": "a4", "deviceId": "d1", "type": "controle", "deadline": "2026-06-01", "status": "uitgevoerd", "executedAt": "2026-06-01", "description": "Jaarlijkse controle", "noteAfterExecution": "Alles in orde" },
+    { "id": "a5", "deviceId": "d4", "type": "controle", "deadline": "2026-07-20", "status": "open", "description": "Controle verpakkingsmachine" },
+    { "id": "a6", "deviceId": "d6", "type": "controle", "deadline": "2026-06-15", "status": "open", "description": "Controle verlichting" },
+    { "id": "a7", "deviceId": "d7", "type": "herstelling", "deadline": "2026-07-09", "status": "open", "description": "Herstelling compressor" }
+  ]
+}
