@@ -1,27 +1,500 @@
 {
   "halls": [
-    { "id": "h1", "name": "Assemblagehal", "x": 40, "y": 40, "width": 300, "height": 200 },
-    { "id": "h2", "name": "Verpakkingshal", "x": 400, "y": 40, "width": 280, "height": 220 },
-    { "id": "h3", "name": "Onderhoudshal", "x": 40, "y": 300, "width": 320, "height": 180 },
-    { "id": "h4", "name": "Opslaghal", "x": 420, "y": 320, "width": 260, "height": 200 }
+    {
+      "id": "h1",
+      "name": "Assemblagehal",
+      "x": 40,
+      "y": 40,
+      "width": 300,
+      "height": 200
+    },
+    {
+      "id": "h2",
+      "name": "Verpakkingshal",
+      "x": 400,
+      "y": 40,
+      "width": 280,
+      "height": 220
+    },
+    {
+      "id": "h3",
+      "name": "Onderhoudshal",
+      "x": 40,
+      "y": 300,
+      "width": 320,
+      "height": 180
+    },
+    {
+      "id": "h4",
+      "name": "Opslaghal",
+      "x": 420,
+      "y": 320,
+      "width": 260,
+      "height": 200
+    },
+    {
+      "id": "h5",
+      "name": "Laadhal",
+      "x": 700,
+      "y": 40,
+      "width": 220,
+      "height": 150
+    }
   ],
   "devices": [
-    { "id": "d1", "name": "Lasrobot 1", "category": "machine", "hallId": "h1", "x": 60, "y": 60, "serialNumber": "SN-1001" },
-    { "id": "d2", "name": "Lasrobot 2", "category": "machine", "hallId": "h1", "x": 150, "y": 60, "serialNumber": "SN-1002" },
-    { "id": "d3", "name": "Transportband A", "category": "band", "hallId": "h1", "x": 60, "y": 140, "serialNumber": "SN-1003" },
-    { "id": "d4", "name": "Verpakkingsmachine 1", "category": "machine", "hallId": "h2", "x": 420, "y": 60, "serialNumber": "SN-2001" },
-    { "id": "d5", "name": "Transportband B", "category": "band", "hallId": "h2", "x": 420, "y": 140, "serialNumber": "SN-2002" },
-    { "id": "d6", "name": "TL-verlichting 1", "category": "lamp", "hallId": "h3", "x": 60, "y": 320, "serialNumber": "SN-3001" },
-    { "id": "d7", "name": "Compressor 1", "category": "machine", "hallId": "h3", "x": 150, "y": 320, "serialNumber": "SN-3002" },
-    { "id": "d8", "name": "Stellingrek sensor", "category": "lamp", "hallId": "h4", "x": 440, "y": 340, "serialNumber": "SN-4001" }
+    {
+      "id": "d1",
+      "name": "Lasrobot 1",
+      "category": "machine",
+      "hallId": "h1",
+      "x": 60,
+      "y": 60,
+      "serialNumber": "SN-1001"
+    },
+    {
+      "id": "d2",
+      "name": "Lasrobot 2",
+      "category": "machine",
+      "hallId": "h1",
+      "x": 150,
+      "y": 60,
+      "serialNumber": "SN-1002"
+    },
+    {
+      "id": "d3",
+      "name": "Transportband A",
+      "category": "band",
+      "hallId": "h1",
+      "x": 60,
+      "y": 140,
+      "serialNumber": "SN-1003"
+    },
+    {
+      "id": "d9",
+      "name": "Lasrobot 3",
+      "category": "machine",
+      "hallId": "h1",
+      "x": 240,
+      "y": 60,
+      "serialNumber": "SN-1004",
+      "description": "Nieuw toestel, nog geen onderhoud gepland"
+    },
+    {
+      "id": "d10",
+      "name": "TL-verlichting Hal 1",
+      "category": "lamp",
+      "hallId": "h1",
+      "x": 300,
+      "y": 200,
+      "serialNumber": "SN-1005"
+    },
+    {
+      "id": "d11",
+      "name": "Transportband C",
+      "category": "band",
+      "hallId": "h1",
+      "x": 150,
+      "y": 180,
+      "serialNumber": "SN-1006"
+    },
+    {
+      "id": "d4",
+      "name": "Verpakkingsmachine 1",
+      "category": "machine",
+      "hallId": "h2",
+      "x": 420,
+      "y": 60,
+      "serialNumber": "SN-2001"
+    },
+    {
+      "id": "d5",
+      "name": "Transportband B",
+      "category": "band",
+      "hallId": "h2",
+      "x": 420,
+      "y": 140,
+      "serialNumber": "SN-2002"
+    },
+    {
+      "id": "d12",
+      "name": "Verpakkingsmachine 2",
+      "category": "machine",
+      "hallId": "h2",
+      "x": 550,
+      "y": 60,
+      "serialNumber": "SN-2003"
+    },
+    {
+      "id": "d13",
+      "name": "TL-verlichting Hal 2",
+      "category": "lamp",
+      "hallId": "h2",
+      "x": 600,
+      "y": 200,
+      "serialNumber": "SN-2004"
+    },
+    {
+      "id": "d14",
+      "name": "Palletiseerrobot",
+      "category": "machine",
+      "hallId": "h2",
+      "x": 500,
+      "y": 180,
+      "serialNumber": "SN-2005"
+    },
+    {
+      "id": "d6",
+      "name": "TL-verlichting 1",
+      "category": "lamp",
+      "hallId": "h3",
+      "x": 60,
+      "y": 320,
+      "serialNumber": "SN-3001"
+    },
+    {
+      "id": "d7",
+      "name": "Compressor 1",
+      "category": "machine",
+      "hallId": "h3",
+      "x": 150,
+      "y": 320,
+      "serialNumber": "SN-3002"
+    },
+    {
+      "id": "d15",
+      "name": "Compressor 2",
+      "category": "machine",
+      "hallId": "h3",
+      "x": 250,
+      "y": 380,
+      "serialNumber": "SN-3003"
+    },
+    {
+      "id": "d16",
+      "name": "Transportband D",
+      "category": "band",
+      "hallId": "h3",
+      "x": 60,
+      "y": 420,
+      "serialNumber": "SN-3004"
+    },
+    {
+      "id": "d17",
+      "name": "TL-verlichting 2",
+      "category": "lamp",
+      "hallId": "h3",
+      "x": 300,
+      "y": 440,
+      "serialNumber": "SN-3005",
+      "description": "Reservelamp, nog geen onderhoud nodig"
+    },
+    {
+      "id": "d8",
+      "name": "Stellingrek sensor",
+      "category": "lamp",
+      "hallId": "h4",
+      "x": 440,
+      "y": 340,
+      "serialNumber": "SN-4001"
+    },
+    {
+      "id": "d18",
+      "name": "Vorkheftruck laadstation",
+      "category": "machine",
+      "hallId": "h4",
+      "x": 500,
+      "y": 340,
+      "serialNumber": "SN-4002"
+    },
+    {
+      "id": "d19",
+      "name": "Transportband E",
+      "category": "band",
+      "hallId": "h4",
+      "x": 440,
+      "y": 420,
+      "serialNumber": "SN-4003"
+    },
+    {
+      "id": "d20",
+      "name": "Klimaatregeling",
+      "category": "machine",
+      "hallId": "h4",
+      "x": 600,
+      "y": 460,
+      "serialNumber": "SN-4004"
+    }
   ],
   "actions": [
-    { "id": "a1", "deviceId": "d1", "type": "controle", "deadline": "2026-07-01", "status": "open", "description": "Periodieke controle lasrobot" },
-    { "id": "a2", "deviceId": "d2", "type": "vervanging", "deadline": "2026-07-09", "status": "open", "description": "Vervanging slijtonderdeel" },
-    { "id": "a3", "deviceId": "d3", "type": "herstelling", "deadline": "2026-08-01", "status": "open", "description": "Herstelling aandrijfmotor" },
-    { "id": "a4", "deviceId": "d1", "type": "controle", "deadline": "2026-06-01", "status": "uitgevoerd", "executedAt": "2026-06-01", "description": "Jaarlijkse controle", "noteAfterExecution": "Alles in orde" },
-    { "id": "a5", "deviceId": "d4", "type": "controle", "deadline": "2026-07-20", "status": "open", "description": "Controle verpakkingsmachine" },
-    { "id": "a6", "deviceId": "d6", "type": "controle", "deadline": "2026-06-15", "status": "open", "description": "Controle verlichting" },
-    { "id": "a7", "deviceId": "d7", "type": "herstelling", "deadline": "2026-07-09", "status": "open", "description": "Herstelling compressor" }
-  ]
+    {
+      "id": "a1",
+      "deviceId": "d1",
+      "type": "controle",
+      "deadline": "2026-07-01",
+      "status": "open",
+      "description": "Periodieke controle lasrobot"
+    },
+    {
+      "id": "a4",
+      "deviceId": "d1",
+      "type": "controle",
+      "deadline": "2026-06-01",
+      "status": "uitgevoerd",
+      "executedAt": "2026-06-01",
+      "description": "Jaarlijkse controle",
+      "noteAfterExecution": "Alles in orde"
+    },
+    {
+      "id": "a21",
+      "deviceId": "d1",
+      "type": "vervanging",
+      "deadline": "2026-07-15",
+      "status": "open",
+      "description": "Vervanging lasdraad"
+    },
+    {
+      "id": "a2",
+      "deviceId": "d2",
+      "type": "vervanging",
+      "deadline": "2026-07-09",
+      "status": "open",
+      "description": "Vervanging slijtonderdeel"
+    },
+    {
+      "id": "a22",
+      "deviceId": "d2",
+      "type": "herstelling",
+      "deadline": "2026-07-17",
+      "status": "open",
+      "description": "Herstelling grijper"
+    },
+    {
+      "id": "a23",
+      "deviceId": "d2",
+      "type": "controle",
+      "deadline": "2026-07-10",
+      "status": "uitgevoerd",
+      "executedAt": "2026-07-11",
+      "description": "Controle voor onderhoud"
+    },
+    {
+      "id": "a3",
+      "deviceId": "d3",
+      "type": "herstelling",
+      "deadline": "2026-08-01",
+      "status": "open",
+      "description": "Herstelling aandrijfmotor"
+    },
+    {
+      "id": "a24",
+      "deviceId": "d3",
+      "type": "controle",
+      "deadline": "2026-09-15",
+      "status": "open",
+      "description": "Jaarlijkse controle band"
+    },
+    {
+      "id": "a25",
+      "deviceId": "d10",
+      "type": "vervanging",
+      "deadline": "2026-07-18",
+      "status": "open",
+      "description": "Lamp vervangen"
+    },
+    {
+      "id": "a26",
+      "deviceId": "d11",
+      "type": "controle",
+      "deadline": "2026-07-05",
+      "status": "uitgevoerd",
+      "executedAt": "2026-07-05",
+      "description": "Controle transportband",
+      "noteAfterExecution": "Band gereinigd en gesmeerd"
+    },
+    {
+      "id": "a5",
+      "deviceId": "d4",
+      "type": "controle",
+      "deadline": "2026-07-20",
+      "status": "uitgevoerd",
+      "executedAt": "2026-07-15",
+      "description": "Controle verpakkingsmachine",
+      "noteAfterExecution": "plastiek terug bijgevuld"
+    },
+    {
+      "id": "a27",
+      "deviceId": "d4",
+      "type": "herstelling",
+      "deadline": "2026-07-14",
+      "status": "open",
+      "description": "Herstelling foliewikkelaar"
+    },
+    {
+      "id": "a28",
+      "deviceId": "d5",
+      "type": "controle",
+      "deadline": "2026-07-22",
+      "status": "open",
+      "description": "Controle transportband"
+    },
+    {
+      "id": "a29",
+      "deviceId": "d5",
+      "type": "vervanging",
+      "deadline": "2026-08-10",
+      "status": "open",
+      "description": "Vervanging rollen"
+    },
+    {
+      "id": "a30",
+      "deviceId": "d12",
+      "type": "herstelling",
+      "deadline": "2026-06-20",
+      "status": "open",
+      "description": "Herstelling doseerklep"
+    },
+    {
+      "id": "a31",
+      "deviceId": "d12",
+      "type": "controle",
+      "deadline": "2026-06-25",
+      "status": "uitgevoerd",
+      "executedAt": "2026-06-26",
+      "description": "Kwartaalcontrole"
+    },
+    {
+      "id": "a32",
+      "deviceId": "d13",
+      "type": "vervanging",
+      "deadline": "2026-10-01",
+      "status": "open",
+      "description": "Vervanging lichtarmatuur"
+    },
+    {
+      "id": "a33",
+      "deviceId": "d14",
+      "type": "controle",
+      "deadline": "2026-07-15",
+      "status": "open",
+      "description": "Controle palletiseerrobot"
+    },
+    {
+      "id": "a34",
+      "deviceId": "d14",
+      "type": "herstelling",
+      "deadline": "2026-07-17",
+      "status": "open",
+      "description": "Herstelling grijparm"
+    },
+    {
+      "id": "a6",
+      "deviceId": "d6",
+      "type": "controle",
+      "deadline": "2026-06-15",
+      "status": "open",
+      "description": "Controle verlichting"
+    },
+    {
+      "id": "a35",
+      "deviceId": "d6",
+      "type": "vervanging",
+      "deadline": "2026-07-10",
+      "status": "uitgevoerd",
+      "executedAt": "2026-07-10",
+      "description": "Vervanging TL-buizen",
+      "noteAfterExecution": "Nieuwe TL-buizen geplaatst"
+    },
+    {
+      "id": "a7",
+      "deviceId": "d7",
+      "type": "herstelling",
+      "deadline": "2026-07-09",
+      "status": "open",
+      "description": "Herstelling compressor"
+    },
+    {
+      "id": "a36",
+      "deviceId": "d7",
+      "type": "controle",
+      "deadline": "2026-07-15",
+      "status": "open",
+      "description": "Drukcontrole compressor"
+    },
+    {
+      "id": "a37",
+      "deviceId": "d15",
+      "type": "herstelling",
+      "deadline": "2026-07-01",
+      "status": "open",
+      "description": "Lekkage compressor herstellen"
+    },
+    {
+      "id": "a38",
+      "deviceId": "d15",
+      "type": "controle",
+      "deadline": "2026-05-01",
+      "status": "uitgevoerd",
+      "executedAt": "2026-05-02",
+      "description": "Jaarlijkse controle",
+      "noteAfterExecution": "Controle uitgevoerd, geen bijzonderheden"
+    },
+    {
+      "id": "a39",
+      "deviceId": "d16",
+      "type": "vervanging",
+      "deadline": "2026-07-18",
+      "status": "open",
+      "description": "Vervanging aandrijfriem"
+    },
+    {
+      "id": "a40",
+      "deviceId": "d8",
+      "type": "controle",
+      "deadline": "2026-08-05",
+      "status": "open",
+      "description": "Sensor kalibreren"
+    },
+    {
+      "id": "a41",
+      "deviceId": "d18",
+      "type": "herstelling",
+      "deadline": "2026-07-14",
+      "status": "open",
+      "description": "Herstelling hydrauliek"
+    },
+    {
+      "id": "a42",
+      "deviceId": "d18",
+      "type": "controle",
+      "deadline": "2026-07-12",
+      "status": "uitgevoerd",
+      "executedAt": "2026-07-13",
+      "description": "Veiligheidscontrole"
+    },
+    {
+      "id": "a43",
+      "deviceId": "d19",
+      "type": "vervanging",
+      "deadline": "2026-07-22",
+      "status": "open",
+      "description": "Vervanging sensor bandbewaking"
+    },
+    {
+      "id": "a44",
+      "deviceId": "d20",
+      "type": "controle",
+      "deadline": "2026-07-15",
+      "status": "open",
+      "description": "Controle klimaatinstallatie"
+    },
+    {
+      "id": "a45",
+      "deviceId": "d20",
+      "type": "herstelling",
+      "deadline": "2026-09-01",
+      "status": "open",
+      "description": "Herstelling compressorunit klimaat"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
