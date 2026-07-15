@@ -26,3 +26,42 @@ export function calculateHallStats(
     overdueCount: openActions.filter((action) => isOverdue(action.deadline)).length,
   }
 }
+
+export type DeviceMarkerUrgency = 'overdue' | 'dueSoon' | 'normal'
+
+export interface HallDeviceMarker {
+  id: string
+  relX: number
+  relY: number
+  urgency: DeviceMarkerUrgency
+}
+
+function clamp01(value: number): number {
+  return Math.min(1, Math.max(0, value))
+}
+
+export function getHallDeviceMarkers(
+  hall: Hall,
+  devices: Device[],
+  actions: MaintenanceAction[],
+): HallDeviceMarker[] {
+  return devices
+    .filter((device) => device.hallId === hall.id)
+    .map((device) => {
+      const deviceActions = actions.filter(
+        (action) => action.deviceId === device.id && action.status === 'open',
+      )
+      const urgency: DeviceMarkerUrgency = deviceActions.some((action) => isOverdue(action.deadline))
+        ? 'overdue'
+        : deviceActions.some((action) => isWithin24h(action.deadline))
+          ? 'dueSoon'
+          : 'normal'
+
+      return {
+        id: device.id,
+        relX: clamp01((device.x - hall.x) / hall.width),
+        relY: clamp01((device.y - hall.y) / hall.height),
+        urgency,
+      }
+    })
+}

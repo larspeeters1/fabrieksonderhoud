@@ -1,12 +1,13 @@
 import { Factory } from '@mui/icons-material'
-import { Alert, Box, Button, CircularProgress, Typography } from '@mui/material'
+import { Alert, Box, Button, Skeleton, Typography } from '@mui/material'
 import { useHalls } from '../hooks/useHalls'
 import { useDevices } from '../hooks/useDevices'
 import { useActions } from '../hooks/useActions'
-import { calculateHallStats } from '../utils/hallStats'
+import { calculateHallStats, getHallDeviceMarkers } from '../utils/hallStats'
 import HallCard from '../components/scenes/HallCard'
 
 const SITE_MARGIN = 40
+const HALL_SCALE = 1.4
 
 export default function SiteOverviewPage() {
   const hallsQuery = useHalls()
@@ -16,6 +17,20 @@ export default function SiteOverviewPage() {
   const isLoading = hallsQuery.isLoading || devicesQuery.isLoading || actionsQuery.isLoading
   const error = hallsQuery.error ?? devicesQuery.error ?? actionsQuery.error
 
+  const halls = hallsQuery.data ?? []
+  const devices = devicesQuery.data ?? []
+  const actions = actionsQuery.data ?? []
+
+  const totalStats = halls
+    .map((hall) => calculateHallStats(hall, devices, actions))
+    .reduce(
+      (totals, stats) => ({
+        openCount: totals.openCount + stats.openCount,
+        overdueCount: totals.overdueCount + stats.overdueCount,
+      }),
+      { openCount: 0, overdueCount: 0 },
+    )
+
   const handleRetry = () => {
     hallsQuery.refetch()
     devicesQuery.refetch()
@@ -24,15 +39,18 @@ export default function SiteOverviewPage() {
 
   return (
     <Box>
-      <Typography variant="h5" component="h1" sx={{ mb: 3 }}>
-        Fabrieksterrein
-      </Typography>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h5" component="h1" sx={{ fontWeight: 700 }}>
+          Fabrieksterrein
+        </Typography>
+        {!isLoading && !error && halls.length > 0 && (
+          <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+            {halls.length} hallen · {totalStats.openCount} open acties · {totalStats.overdueCount} urgent
+          </Typography>
+        )}
+      </Box>
 
-      {isLoading && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-          <CircularProgress />
-        </Box>
-      )}
+      {isLoading && <Skeleton variant="rounded" width="100%" height={480} sx={{ borderRadius: '12px' }} />}
 
       {!isLoading && error && (
         <Alert
@@ -47,7 +65,7 @@ export default function SiteOverviewPage() {
         </Alert>
       )}
 
-      {!isLoading && !error && hallsQuery.data && hallsQuery.data.length === 0 && (
+      {!isLoading && !error && halls.length === 0 && (
         <Box
           sx={{
             display: 'flex',
@@ -63,12 +81,8 @@ export default function SiteOverviewPage() {
         </Box>
       )}
 
-      {!isLoading && !error && hallsQuery.data && hallsQuery.data.length > 0 && (
-        <SitePlan
-          halls={hallsQuery.data}
-          devices={devicesQuery.data ?? []}
-          actions={actionsQuery.data ?? []}
-        />
+      {!isLoading && !error && halls.length > 0 && (
+        <SitePlan halls={halls} devices={devices} actions={actions} />
       )}
     </Box>
   )
@@ -83,17 +97,23 @@ function SitePlan({
   devices: NonNullable<ReturnType<typeof useDevices>['data']>
   actions: NonNullable<ReturnType<typeof useActions>['data']>
 }) {
-  const siteWidth = Math.max(...halls.map((hall) => hall.x + hall.width)) + SITE_MARGIN
-  const siteHeight = Math.max(...halls.map((hall) => hall.y + hall.height)) + SITE_MARGIN
+  const scaledHalls = halls.map((hall) => ({
+    ...hall,
+    x: hall.x * HALL_SCALE,
+    y: hall.y * HALL_SCALE,
+    width: hall.width * HALL_SCALE,
+    height: hall.height * HALL_SCALE,
+  }))
+
+  const siteWidth = Math.max(...scaledHalls.map((hall) => hall.x + hall.width)) + SITE_MARGIN
+  const siteHeight = Math.max(...scaledHalls.map((hall) => hall.y + hall.height)) + SITE_MARGIN
 
   return (
     <Box
       sx={{
         overflow: 'auto',
-        border: 1,
-        borderColor: 'divider',
-        borderRadius: 1,
-        backgroundColor: 'grey.50',
+        borderRadius: '12px',
+        backgroundColor: (theme) => theme.palette.siteMap.background,
       }}
     >
       <Box
@@ -101,13 +121,18 @@ function SitePlan({
           position: 'relative',
           width: siteWidth,
           height: siteHeight,
-          backgroundImage:
-            'linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px)',
+          backgroundImage: (theme) =>
+            `linear-gradient(to right, ${theme.palette.siteMap.gridLine} 1px, transparent 1px), linear-gradient(to bottom, ${theme.palette.siteMap.gridLine} 1px, transparent 1px)`,
           backgroundSize: '40px 40px',
         }}
       >
-        {halls.map((hall) => (
-          <HallCard key={hall.id} hall={hall} stats={calculateHallStats(hall, devices, actions)} />
+        {scaledHalls.map((hall, index) => (
+          <HallCard
+            key={hall.id}
+            hall={hall}
+            stats={calculateHallStats(hall, devices, actions)}
+            deviceMarkers={getHallDeviceMarkers(halls[index], devices, actions)}
+          />
         ))}
       </Box>
     </Box>

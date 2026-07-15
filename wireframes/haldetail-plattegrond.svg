@@ -1,0 +1,82 @@
+<svg viewBox="0 0 900 640" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <!-- achtergrond -->
+  <rect x="0" y="0" width="900" height="640" fill="#ffffff" stroke="#333" stroke-width="2"/>
+
+  <!-- topbalk -->
+  <rect x="0" y="0" width="900" height="52" fill="#f0f0f0" stroke="#333"/>
+  <text x="16" y="33" font-size="16">&#8592; Terug</text>
+  <text x="450" y="33" font-size="18" font-weight="bold" text-anchor="middle">Hal 1</text>
+  <rect x="700" y="12" width="90" height="28" fill="#fff" stroke="#333" rx="4"/>
+  <text x="745" y="31" font-size="13" text-anchor="middle">uitloggen</text>
+  <circle cx="840" cy="26" r="16" fill="#fff" stroke="#333"/>
+  <text x="840" y="30" font-size="10" text-anchor="middle">user</text>
+
+  <!-- weergave-toggle -->
+  <rect x="16" y="66" width="200" height="34" fill="#fff" stroke="#333" rx="17"/>
+  <rect x="18" y="68" width="98" height="30" fill="#cfcfcf" rx="15"/>
+  <text x="67" y="88" font-size="13" text-anchor="middle" font-weight="bold">Plattegrond</text>
+  <text x="166" y="88" font-size="13" text-anchor="middle">Lijst</text>
+
+  <!-- knop inspectie -->
+  <rect x="730" y="66" width="154" height="34" fill="#e0e0e0" stroke="#333" rx="6"/>
+  <text x="807" y="88" font-size="13" text-anchor="middle" font-weight="bold">&#9654; Start inspectie</text>
+
+  <!-- filterbalk -->
+  <rect x="16" y="112" width="868" height="46" fill="#fafafa" stroke="#999" stroke-dasharray="4 3"/>
+  <rect x="26" y="120" width="130" height="30" fill="#fff" stroke="#333" rx="4"/>
+  <text x="91" y="140" font-size="12" text-anchor="middle">Categorie &#9662;</text>
+  <rect x="166" y="120" width="130" height="30" fill="#fff" stroke="#333" rx="4"/>
+  <text x="231" y="140" font-size="12" text-anchor="middle">Type actie &#9662;</text>
+  <rect x="306" y="120" width="110" height="30" fill="#fff" stroke="#333" rx="4"/>
+  <text x="361" y="140" font-size="12" text-anchor="middle">Status &#9662;</text>
+  <rect x="426" y="120" width="150" height="30" fill="#fff" stroke="#333" rx="4"/>
+  <text x="501" y="140" font-size="12" text-anchor="middle">Binnen 7 dagen &#9662;</text>
+  <rect x="586" y="120" width="110" height="30" fill="#fff" stroke="#333" rx="15"/>
+  <text x="641" y="140" font-size="12" text-anchor="middle">&#9888; Urgent</text>
+  <rect x="706" y="120" width="168" height="30" fill="#fff" stroke="#333" rx="4"/>
+  <text x="716" y="140" font-size="12" fill="#888">&#128269; Zoeken...</text>
+
+  <!-- plattegrond van de hal -->
+  <rect x="16" y="172" width="868" height="440" fill="#fdfdfd" stroke="#333" stroke-width="2"/>
+  <text x="26" y="192" font-size="11" fill="#888">plattegrond hal (position: relative)</text>
+
+  <!-- apparaat: machine met verlopen actie -->
+  <rect x="90" y="230" width="56" height="56" fill="#eee" stroke="#333" rx="8"/>
+  <text x="118" y="264" font-size="22" text-anchor="middle">&#9881;</text>
+  <circle cx="146" cy="230" r="11" fill="#f4b6b6" stroke="#c33"/>
+  <text x="146" y="234" font-size="10" text-anchor="middle">!</text>
+  <text x="118" y="304" font-size="11" text-anchor="middle" font-weight="bold">Persmachine A</text>
+  <rect x="60" y="312" width="116" height="18" fill="#fdecec" stroke="#c33" rx="9"/>
+  <text x="118" y="325" font-size="10" text-anchor="middle">herstelling &#183; verlopen</text>
+
+  <!-- apparaat: lamp, geen urgentie -->
+  <rect x="320" y="230" width="56" height="56" fill="#eee" stroke="#333" rx="8"/>
+  <text x="348" y="264" font-size="22" text-anchor="middle">&#128161;</text>
+  <text x="348" y="304" font-size="11" text-anchor="middle" font-weight="bold">Lamp gang W</text>
+  <rect x="292" y="312" width="112" height="18" fill="#eef2f8" stroke="#69c" rx="9"/>
+  <text x="348" y="325" font-size="10" text-anchor="middle">controle &#183; 12/07</text>
+
+  <!-- apparaat: band, binnen 24u -->
+  <rect x="560" y="330" width="56" height="56" fill="#eee" stroke="#333" rx="8"/>
+  <text x="588" y="364" font-size="22" text-anchor="middle">&#10231;</text>
+  <circle cx="616" cy="330" r="11" fill="#fce3bd" stroke="#e08700"/>
+  <text x="616" y="334" font-size="10" text-anchor="middle">!</text>
+  <text x="588" y="404" font-size="11" text-anchor="middle" font-weight="bold">Band 3</text>
+  <rect x="528" y="412" width="120" height="18" fill="#fff4e0" stroke="#e08700" rx="9"/>
+  <text x="588" y="425" font-size="10" text-anchor="middle">vervanging &#183; &lt;24u</text>
+
+  <!-- apparaat: machine, geen urgentie -->
+  <rect x="200" y="470" width="56" height="56" fill="#eee" stroke="#333" rx="8"/>
+  <text x="228" y="504" font-size="22" text-anchor="middle">&#9881;</text>
+  <text x="228" y="544" font-size="11" text-anchor="middle" font-weight="bold">Freesmachine B</text>
+  <rect x="170" y="552" width="116" height="18" fill="#eef2f8" stroke="#69c" rx="9"/>
+  <text x="228" y="565" font-size="10" text-anchor="middle">controle &#183; 15/07</text>
+
+  <!-- annotaties -->
+  <text x="700" y="240" font-size="11" fill="#c33">rood bolletje = verlopen</text>
+  <text x="700" y="256" font-size="11" fill="#e08700">oranje = binnen 24u</text>
+  <text x="700" y="280" font-size="11" fill="#555">tap op apparaat &#8594;</text>
+  <text x="700" y="294" font-size="11" fill="#555">detailpagina apparaat</text>
+  <text x="700" y="580" font-size="11" fill="#555">(beheerder: klik op lege plek</text>
+  <text x="700" y="594" font-size="11" fill="#555">&#8594; nieuw apparaat, x/y ingevuld)</text>
+</svg>
