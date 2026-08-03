@@ -1,7 +1,7 @@
 import { Check, LocationOn } from '@mui/icons-material'
 import { Avatar, Box, Button, Chip, Paper, Typography, useTheme } from '@mui/material'
+import { useUrgencyDisplay } from '../../hooks/useUrgencyDisplay'
 import type { Device, DeviceCategory, MaintenanceAction } from '../../model/types'
-import { getUrgency } from '../../utils/actionUtils'
 import { formatDeadlineLong } from '../../utils/dateUtils'
 import CategoryIcon from './CategoryIcon'
 
@@ -37,7 +37,8 @@ export default function InspectionStepCard({
   onShowOnMap,
 }: InspectionStepCardProps) {
   const theme = useTheme()
-  const urgency = getUrgency(action)
+  const { urgencyOf } = useUrgencyDisplay()
+  const urgency = urgencyOf(action)
   const urgencyColor = isDone
     ? theme.palette.success.main
     : urgency === 'overdue'

@@ -16,12 +16,13 @@ import { useHall } from '../hooks/useHall'
 import { useHallDevices } from '../hooks/useHallDevices'
 import { useActions } from '../hooks/useActions'
 import { useHallFilters } from '../hooks/useHallFilters'
+import { useSettings } from '../hooks/useSettings'
 import { sortDevicesByUrgency } from '../utils/actionUtils'
 import { countMatchingActions, filterHallDevices, getNextOpenMatchingAction } from '../utils/filterUtils'
 import HallFloorPlan from '../components/scenes/HallFloorPlan'
 import DeviceListItem from '../components/scenes/DeviceListItem'
 import FilterBar from '../components/controls/FilterBar'
-import { filtersToSearchParams, searchParamsToFilters, type HallFilters } from '../model/filters'
+import { DEFAULT_FILTERS, filtersToSearchParams, searchParamsToFilters, type HallFilters } from '../model/filters'
 import type { Device, MaintenanceAction } from '../model/types'
 
 type ViewMode = 'floorplan' | 'list'
@@ -30,12 +31,26 @@ export default function HallDetailPage() {
   const { hallId } = useParams<{ hallId: string }>()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [view, setView] = useState<ViewMode>('floorplan')
+  const { settings } = useSettings()
+  const [view, setView] = useState<ViewMode>(() => (settings.defaultHallView === 'lijst' ? 'list' : 'floorplan'))
+  // The user's settings define what "default" filters means (currently just
+  // the time window); "Reset filters" restores this, not the app-wide
+  // DEFAULT_FILTERS constant.
+  const defaultFilters = useMemo<HallFilters>(
+    () => ({ ...DEFAULT_FILTERS, timeWindow: settings.defaultTimeWindow }),
+    [settings.defaultTimeWindow],
+  )
   // Seeded once from the URL so filters survive a round-trip through the
   // inspection mode ("Ronde verlaten" navigates back here with the same
   // filters encoded as query params) without turning this page's filter
-  // state into a permanent URL sync for every click.
-  const { filters, setFilter, resetFilters, isDefault } = useHallFilters(searchParamsToFilters(searchParams))
+  // state into a permanent URL sync for every click. When there's no
+  // `timeWindow` in the URL (a fresh visit, not a round-trip), fall back to
+  // the user's default time window instead of the URL parser's hardcoded one.
+  const parsedFilters = searchParamsToFilters(searchParams)
+  const initialFilters: HallFilters = searchParams.has('timeWindow')
+    ? parsedFilters
+    : { ...parsedFilters, timeWindow: settings.defaultTimeWindow }
+  const { filters, setFilter, resetFilters, isDefault } = useHallFilters(initialFilters, defaultFilters)
 
   const highlightDeviceId = searchParams.get('highlight') ?? undefined
   // "Toon op plattegrond" links here with a `highlight` query param so the
@@ -161,7 +176,13 @@ export default function HallDetailPage() {
         </Tooltip>
       </Box>
 
-      <FilterBar filters={filters} setFilter={setFilter} resetFilters={resetFilters} isDefault={isDefault} />
+      <FilterBar
+        filters={filters}
+        setFilter={setFilter}
+        resetFilters={resetFilters}
+        isDefault={isDefault}
+        defaultFilters={defaultFilters}
+      />
 
       {isLoading && <Skeleton variant="rounded" width="100%" height={420} sx={{ borderRadius: '12px' }} />}
 

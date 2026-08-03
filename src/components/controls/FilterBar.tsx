@@ -51,22 +51,29 @@ interface FilterBarProps {
   setFilter: SetFilter
   resetFilters: () => void
   isDefault: boolean
+  defaultFilters?: HallFilters
 }
 
-function countActiveFilters(filters: HallFilters): number {
+function countActiveFilters(filters: HallFilters, defaultFilters: HallFilters): number {
   let count = 0
   if (filters.category !== undefined) count += 1
   if (filters.actionType !== undefined) count += 1
   if (filters.status !== undefined) count += 1
-  if (filters.timeWindow !== DEFAULT_FILTERS.timeWindow) count += 1
+  if (filters.timeWindow !== defaultFilters.timeWindow) count += 1
   if (filters.highUrgencyOnly) count += 1
   if (filters.search.trim() !== '') count += 1
   return count
 }
 
-export default function FilterBar({ filters, setFilter, resetFilters, isDefault }: FilterBarProps) {
+export default function FilterBar({
+  filters,
+  setFilter,
+  resetFilters,
+  isDefault,
+  defaultFilters = DEFAULT_FILTERS,
+}: FilterBarProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const activeCount = countActiveFilters(filters)
+  const activeCount = countActiveFilters(filters, defaultFilters)
 
   return (
     <Box sx={{ mb: 2 }}>
@@ -124,7 +131,7 @@ export default function FilterBar({ filters, setFilter, resetFilters, isDefault 
         </Box>
       </Drawer>
 
-      <ActiveFilterChips filters={filters} setFilter={setFilter} />
+      <ActiveFilterChips filters={filters} setFilter={setFilter} defaultFilters={defaultFilters} />
     </Box>
   )
 }
@@ -255,7 +262,15 @@ function FilterControls({
   )
 }
 
-function ActiveFilterChips({ filters, setFilter }: { filters: HallFilters; setFilter: SetFilter }) {
+function ActiveFilterChips({
+  filters,
+  setFilter,
+  defaultFilters,
+}: {
+  filters: HallFilters
+  setFilter: SetFilter
+  defaultFilters: HallFilters
+}) {
   const chips: { key: string; label: string; onDelete: () => void }[] = []
 
   if (filters.category) {
@@ -279,11 +294,11 @@ function ActiveFilterChips({ filters, setFilter }: { filters: HallFilters; setFi
       onDelete: () => setFilter('status', undefined),
     })
   }
-  if (filters.timeWindow !== DEFAULT_FILTERS.timeWindow) {
+  if (filters.timeWindow !== defaultFilters.timeWindow) {
     chips.push({
       key: 'timeWindow',
       label: `Tijdsvenster: ${TIME_WINDOW_LABELS[filters.timeWindow]}`,
-      onDelete: () => setFilter('timeWindow', DEFAULT_FILTERS.timeWindow),
+      onDelete: () => setFilter('timeWindow', defaultFilters.timeWindow),
     })
   }
   if (filters.highUrgencyOnly) {

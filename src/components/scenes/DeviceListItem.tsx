@@ -1,9 +1,9 @@
 import { ChevronRight } from '@mui/icons-material'
 import { Avatar, Box, Chip, Paper, Typography, useTheme } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useUrgencyDisplay } from '../../hooks/useUrgencyDisplay'
 import type { HallFilters } from '../../model/filters'
 import type { Device, MaintenanceAction } from '../../model/types'
-import { getUrgency } from '../../utils/actionUtils'
 import { formatDeadlineShort } from '../../utils/dateUtils'
 import { getNextMatchingAction } from '../../utils/filterUtils'
 import CategoryIcon from './CategoryIcon'
@@ -17,8 +17,9 @@ interface DeviceListItemProps {
 export default function DeviceListItem({ device, actions, filters }: DeviceListItemProps) {
   const theme = useTheme()
   const navigate = useNavigate()
+  const { urgencyOf } = useUrgencyDisplay()
   const nextAction = getNextMatchingAction(device.id, actions, filters)
-  const urgency = getUrgency(nextAction)
+  const urgency = urgencyOf(nextAction)
 
   const accentColor =
     urgency === 'overdue'

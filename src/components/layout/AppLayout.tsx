@@ -1,10 +1,11 @@
-import { Factory, Logout } from '@mui/icons-material'
+import { Factory, Logout, Settings } from '@mui/icons-material'
 import { AppBar, Box, Chip, Container, IconButton, Toolbar, Tooltip, Typography } from '@mui/material'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 
 export default function AppLayout() {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -36,6 +37,11 @@ export default function AppLayout() {
                 variant="outlined"
                 sx={{ color: 'rgba(255,255,255,0.85)', borderColor: 'rgba(255,255,255,0.3)' }}
               />
+              <Tooltip title="Instellingen">
+                <IconButton color="inherit" onClick={() => navigate('/settings')} size="small">
+                  <Settings fontSize="small" />
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Uitloggen">
                 <IconButton color="inherit" onClick={logout} size="small">
                   <Logout fontSize="small" />

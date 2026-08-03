@@ -1,5 +1,6 @@
 import { Box, Typography, useTheme } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useUrgencyDisplay } from '../../hooks/useUrgencyDisplay'
 import type { Hall } from '../../model/types'
 import type { HallDeviceMarker, HallStats } from '../../utils/hallStats'
 
@@ -14,9 +15,11 @@ const SMALL_HALL_HEIGHT = 200
 const MARKER_LAYER_MIN_HEIGHT = 140
 const URGENT_RED = '#FF6B6B'
 
-export default function HallCard({ hall, stats, deviceMarkers }: HallCardProps) {
+export default function HallCard({ hall, stats: rawStats, deviceMarkers }: HallCardProps) {
   const navigate = useNavigate()
   const theme = useTheme()
+  const { displayStats, displayUrgency } = useUrgencyDisplay()
+  const stats = displayStats(rawStats)
 
   const statusColor =
     stats.overdueCount > 0
@@ -29,12 +32,14 @@ export default function HallCard({ hall, stats, deviceMarkers }: HallCardProps) 
   const isSmall = hall.width < SMALL_HALL_WIDTH || hall.height < SMALL_HALL_HEIGHT
   const showMarkerLayer = hall.height >= MARKER_LAYER_MIN_HEIGHT
 
-  const markerColor = (urgency: HallDeviceMarker['urgency']) =>
-    urgency === 'overdue'
+  const markerColor = (urgency: HallDeviceMarker['urgency']) => {
+    const displayedUrgency = displayUrgency(urgency)
+    return displayedUrgency === 'overdue'
       ? URGENT_RED
-      : urgency === 'dueSoon'
+      : displayedUrgency === 'dueSoon'
         ? theme.palette.warning.main
         : 'rgba(255,255,255,0.25)'
+  }
 
   const urgencyBlock =
     stats.overdueCount > 0

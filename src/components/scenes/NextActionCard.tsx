@@ -1,7 +1,7 @@
 import { Check, CheckCircleOutlined } from '@mui/icons-material'
 import { Box, Button, Chip, Paper, Typography, useTheme } from '@mui/material'
+import { useUrgencyDisplay } from '../../hooks/useUrgencyDisplay'
 import type { MaintenanceAction } from '../../model/types'
-import { getUrgency } from '../../utils/actionUtils'
 import { formatDeadlineLong } from '../../utils/dateUtils'
 
 interface NextActionCardProps {
@@ -11,6 +11,7 @@ interface NextActionCardProps {
 
 export default function NextActionCard({ action, onMarkDone }: NextActionCardProps) {
   const theme = useTheme()
+  const { urgencyOf } = useUrgencyDisplay()
 
   if (!action) {
     return (
@@ -35,7 +36,7 @@ export default function NextActionCard({ action, onMarkDone }: NextActionCardPro
     )
   }
 
-  const urgency = getUrgency(action)
+  const urgency = urgencyOf(action)
   const urgencyColor =
     urgency === 'overdue'
       ? theme.palette.error.main

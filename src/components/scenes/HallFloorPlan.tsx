@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { Box, Tooltip, Typography, useTheme } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { useUrgencyDisplay } from '../../hooks/useUrgencyDisplay'
 import type { HallFilters } from '../../model/filters'
 import type { Device, Hall, MaintenanceAction } from '../../model/types'
-import { getUrgency } from '../../utils/actionUtils'
 import { formatDeadlineShort } from '../../utils/dateUtils'
 import { getNextMatchingAction } from '../../utils/filterUtils'
 import CategoryIcon from './CategoryIcon'
@@ -73,7 +73,8 @@ function FloorPlanDeviceChip({
 }) {
   const theme = useTheme()
   const navigate = useNavigate()
-  const urgency = getUrgency(action)
+  const { urgencyOf } = useUrgencyDisplay()
+  const urgency = urgencyOf(action)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
