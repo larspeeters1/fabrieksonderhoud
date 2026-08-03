@@ -1,17 +1,27 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from 'react'
-import { ArrowBack, DevicesOther, FilterAltOff, Map as MapIcon, ViewList } from '@mui/icons-material'
-import { Alert, Box, Button, IconButton, Skeleton, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
+import { ArrowBack, DevicesOther, FilterAltOff, Map as MapIcon, PlayArrow, ViewList } from '@mui/icons-material'
+import {
+  Alert,
+  Box,
+  Button,
+  IconButton,
+  Skeleton,
+  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material'
 import { Link as RouterLink, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useHall } from '../hooks/useHall'
 import { useHallDevices } from '../hooks/useHallDevices'
 import { useActions } from '../hooks/useActions'
 import { useHallFilters } from '../hooks/useHallFilters'
 import { sortDevicesByUrgency } from '../utils/actionUtils'
-import { countMatchingActions, filterHallDevices } from '../utils/filterUtils'
+import { countMatchingActions, filterHallDevices, getNextOpenMatchingAction } from '../utils/filterUtils'
 import HallFloorPlan from '../components/scenes/HallFloorPlan'
 import DeviceListItem from '../components/scenes/DeviceListItem'
 import FilterBar from '../components/controls/FilterBar'
-import type { HallFilters } from '../model/filters'
+import { filtersToSearchParams, searchParamsToFilters, type HallFilters } from '../model/filters'
 import type { Device, MaintenanceAction } from '../model/types'
 
 type ViewMode = 'floorplan' | 'list'
@@ -21,7 +31,11 @@ export default function HallDetailPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const [view, setView] = useState<ViewMode>('floorplan')
-  const { filters, setFilter, resetFilters, isDefault } = useHallFilters()
+  // Seeded once from the URL so filters survive a round-trip through the
+  // inspection mode ("Ronde verlaten" navigates back here with the same
+  // filters encoded as query params) without turning this page's filter
+  // state into a permanent URL sync for every click.
+  const { filters, setFilter, resetFilters, isDefault } = useHallFilters(searchParamsToFilters(searchParams))
 
   const highlightDeviceId = searchParams.get('highlight') ?? undefined
   // "Toon op plattegrond" links here with a `highlight` query param so the
@@ -66,6 +80,13 @@ export default function HallDetailPage() {
     () => countMatchingActions(filteredDevices, actions, filters),
     [filteredDevices, actions, filters],
   )
+  // The inspection round walks one action per device, so "is there anything
+  // to inspect" is about devices with a matching action, not the raw action
+  // count shown in the filter summary.
+  const hasRoundActions = useMemo(
+    () => filteredDevices.some((device) => getNextOpenMatchingAction(device.id, actions, filters) !== undefined),
+    [filteredDevices, actions, filters],
+  )
 
   // A device linked to via "Toon op plattegrond" must always be visible on
   // the floor plan, even if the user's current filters would otherwise hide
@@ -87,6 +108,11 @@ export default function HallDetailPage() {
 
   const handleViewChange = (_: MouseEvent<HTMLElement>, next: ViewMode | null) => {
     if (next) setView(next)
+  }
+
+  const handleStartInspection = () => {
+    if (!hallId) return
+    navigate(`/halls/${hallId}/inspection?${filtersToSearchParams(filters).toString()}`)
   }
 
   if (!isLoading && !error && !hall) {
@@ -121,6 +147,18 @@ export default function HallDetailPage() {
             Lijst
           </ToggleButton>
         </ToggleButtonGroup>
+        <Tooltip title={hasRoundActions ? '' : 'Geen acties binnen de huidige filters'}>
+          <span>
+            <Button
+              variant="contained"
+              startIcon={<PlayArrow />}
+              onClick={handleStartInspection}
+              disabled={!hall || !hasRoundActions}
+            >
+              Start inspectie
+            </Button>
+          </span>
+        </Tooltip>
       </Box>
 
       <FilterBar filters={filters} setFilter={setFilter} resetFilters={resetFilters} isDefault={isDefault} />

@@ -34,6 +34,20 @@ export function getNextMatchingAction(
   return getMatchingActions(deviceId, actions, filters)[0]
 }
 
+// US5's inspection round only ever walks actions that still need to happen —
+// "de eerstvolgende open actie die aan de actieve filters voldoet" — whereas
+// getNextMatchingAction above deliberately includes executed actions too (it
+// backs the hall detail chips, which show what an action *was* even once
+// done). Kept as a separate function rather than a parameter so neither
+// caller has to reason about a flag it doesn't need.
+export function getNextOpenMatchingAction(
+  deviceId: string,
+  actions: MaintenanceAction[],
+  filters: HallFilters,
+): MaintenanceAction | undefined {
+  return getMatchingActions(deviceId, actions, filters).find((action) => action.status === 'open')
+}
+
 function matchesSearch(device: Device, search: string): boolean {
   const term = search.trim().toLowerCase()
   if (!term) return true

@@ -1,8 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 import { DEFAULT_FILTERS, type HallFilters } from '../model/filters'
 
-export function useHallFilters() {
-  const [filters, setFilters] = useState<HallFilters>(DEFAULT_FILTERS)
+export function useHallFilters(initialFilters: HallFilters = DEFAULT_FILTERS) {
+  // Lazy initializer: only read `initialFilters` once, on mount. This lets
+  // callers seed state from e.g. the URL (returning from an inspection
+  // round) without turning it into a continuous two-way sync.
+  const [filters, setFilters] = useState<HallFilters>(() => initialFilters)
 
   const setFilter = useCallback(<K extends keyof HallFilters>(key: K, value: HallFilters[K]) => {
     setFilters((prev) => ({ ...prev, [key]: value }))

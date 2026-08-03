@@ -1,0 +1,58 @@
+<svg viewBox="0 0 380 720" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <!-- telefoonkader -->
+  <rect x="0" y="0" width="380" height="720" fill="#ffffff" stroke="#333" stroke-width="2" rx="18"/>
+
+  <!-- topbalk -->
+  <rect x="2" y="2" width="376" height="50" fill="#f0f0f0" stroke="#333"/>
+  <text x="16" y="32" font-size="14">&#10005; Verlaten</text>
+  <text x="200" y="32" font-size="15" font-weight="bold" text-anchor="middle">Hal 1 &#183; inspectie</text>
+  <circle cx="352" cy="27" r="13" fill="#fff" stroke="#333"/>
+  <text x="352" y="31" font-size="9" text-anchor="middle">user</text>
+
+  <!-- voortgang -->
+  <text x="190" y="80" font-size="13" text-anchor="middle" font-weight="bold">Stap 3 van 8</text>
+  <rect x="24" y="92" width="332" height="8" fill="#eee" stroke="#999" rx="4"/>
+  <rect x="24" y="92" width="124" height="8" fill="#888" rx="4"/>
+
+  <!-- focuskaart -->
+  <rect x="16" y="118" width="348" height="420" fill="#fff" stroke="#333" stroke-width="2" rx="12"/>
+
+  <!-- apparaat -->
+  <circle cx="60" cy="170" r="26" fill="#eee" stroke="#333"/>
+  <text x="60" y="180" font-size="22" text-anchor="middle">&#9881;</text>
+  <text x="100" y="164" font-size="17" font-weight="bold">Persmachine A</text>
+  <text x="100" y="184" font-size="12" fill="#555">machine &#183; PM-2201</text>
+
+  <!-- urgentie-chip -->
+  <rect x="252" y="126" width="100" height="24" fill="#fdecec" stroke="#c33" rx="12"/>
+  <text x="302" y="142" font-size="11" text-anchor="middle" fill="#c33" font-weight="bold">VERLOPEN</text>
+
+  <!-- de actie -->
+  <line x1="32" y1="212" x2="348" y2="212" stroke="#ddd"/>
+  <text x="32" y="242" font-size="11" fill="#c33" font-weight="bold">UIT TE VOEREN</text>
+  <text x="32" y="272" font-size="19" font-weight="bold">Herstelling</text>
+  <text x="32" y="296" font-size="13" fill="#c33">Deadline: 07/07/2026 (verlopen)</text>
+  <text x="32" y="326" font-size="13">Hydraulische leiding vervangen,</text>
+  <text x="32" y="344" font-size="13">druk valt weg bij opstart.</text>
+
+  <!-- grote knop uitvoeren -->
+  <rect x="32" y="380" width="316" height="52" fill="#cfe3cf" stroke="#2e7d32" stroke-width="2" rx="10"/>
+  <text x="190" y="412" font-size="16" text-anchor="middle" font-weight="bold">&#10003; Markeer als uitgevoerd</text>
+  <text x="190" y="452" font-size="10" text-anchor="middle" fill="#555">&#8594; dialoog: optionele notitie</text>
+
+  <!-- toon op plattegrond -->
+  <rect x="32" y="470" width="316" height="44" fill="#fff" stroke="#333" rx="10"/>
+  <text x="190" y="497" font-size="14" text-anchor="middle">&#128205; Toon op plattegrond</text>
+
+  <!-- navigatie -->
+  <circle cx="70" cy="600" r="30" fill="#eee" stroke="#333"/>
+  <text x="70" y="609" font-size="22" text-anchor="middle">&#8592;</text>
+  <text x="190" y="606" font-size="12" text-anchor="middle" fill="#555">vorige / volgende</text>
+  <circle cx="310" cy="600" r="30" fill="#eee" stroke="#333"/>
+  <text x="310" y="609" font-size="22" text-anchor="middle">&#8594;</text>
+
+  <!-- annotaties -->
+  <text x="190" y="668" font-size="10" text-anchor="middle" fill="#555">na uitvoeren: kaart wordt groen, auto &#8594; volgende stap</text>
+  <text x="190" y="684" font-size="10" text-anchor="middle" fill="#555">alle stappen klaar &#8594; afsluitscherm "Ronde voltooid"</text>
+  <text x="190" y="700" font-size="10" text-anchor="middle" fill="#555">mobile-first: grote knoppen binnen duimbereik</text>
+</svg>

@@ -298,8 +298,10 @@
       "deviceId": "d10",
       "type": "vervanging",
       "deadline": "2026-07-18",
-      "status": "open",
-      "description": "Lamp vervangen"
+      "status": "uitgevoerd",
+      "description": "Lamp vervangen",
+      "executedAt": "2026-08-02",
+      "noteAfterExecution": "in orde"
     },
     {
       "id": "a26",

@@ -19,3 +19,39 @@ export const DEFAULT_FILTERS: HallFilters = {
   highUrgencyOnly: false,
   search: '',
 }
+
+const CATEGORIES: DeviceCategory[] = ['machine', 'band', 'lamp']
+const ACTION_TYPES: ActionType[] = ['controle', 'vervanging', 'herstelling']
+const STATUSES: ActionStatus[] = ['open', 'uitgevoerd']
+const TIME_WINDOWS: TimeWindow[] = [0, 3, 7, 30]
+
+// The inspection round (US5) is driven entirely by the filters encoded in
+// the URL — a refresh mid-round must reproduce the exact same filtered set.
+// These helpers are the single place that knows the query-param shape, so
+// the hall detail page (writer) and the inspection page (reader) can't drift.
+export function filtersToSearchParams(filters: HallFilters): URLSearchParams {
+  const params = new URLSearchParams()
+  if (filters.category) params.set('category', filters.category)
+  if (filters.actionType) params.set('actionType', filters.actionType)
+  if (filters.status) params.set('status', filters.status)
+  if (filters.timeWindow !== DEFAULT_FILTERS.timeWindow) params.set('timeWindow', String(filters.timeWindow))
+  if (filters.highUrgencyOnly) params.set('highUrgencyOnly', '1')
+  if (filters.search.trim()) params.set('search', filters.search)
+  return params
+}
+
+export function searchParamsToFilters(params: URLSearchParams): HallFilters {
+  const category = params.get('category')
+  const actionType = params.get('actionType')
+  const status = params.get('status')
+  const timeWindow = Number(params.get('timeWindow'))
+
+  return {
+    category: CATEGORIES.includes(category as DeviceCategory) ? (category as DeviceCategory) : undefined,
+    actionType: ACTION_TYPES.includes(actionType as ActionType) ? (actionType as ActionType) : undefined,
+    status: STATUSES.includes(status as ActionStatus) ? (status as ActionStatus) : undefined,
+    timeWindow: TIME_WINDOWS.includes(timeWindow as TimeWindow) ? (timeWindow as TimeWindow) : DEFAULT_FILTERS.timeWindow,
+    highUrgencyOnly: params.get('highUrgencyOnly') === '1',
+    search: params.get('search') ?? '',
+  }
+}

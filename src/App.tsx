@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage'
 import SiteOverviewPage from './pages/SiteOverviewPage'
 import HallDetailPage from './pages/HallDetailPage'
 import DeviceDetailPage from './pages/DeviceDetailPage'
+import InspectionPage from './pages/InspectionPage'
 import NotFoundPage from './pages/NotFoundPage'
 import AppLayout from './components/layout/AppLayout'
 
@@ -25,6 +26,7 @@ function AppRoutes() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<SiteOverviewPage />} />
         <Route path="/halls/:hallId" element={<HallDetailPage />} />
+        <Route path="/halls/:hallId/inspection" element={<InspectionPage />} />
         <Route path="/devices/:deviceId" element={<DeviceDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
