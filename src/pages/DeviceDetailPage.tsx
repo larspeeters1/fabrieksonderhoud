@@ -1,25 +1,13 @@
 import { useState } from 'react'
-import { Add, ArrowBack, Check, Delete, Edit, MyLocation } from '@mui/icons-material'
-import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  Paper,
-  Skeleton,
-  Snackbar,
-  Tooltip,
-  Typography,
-  useTheme,
-} from '@mui/material'
+import { Add, ArrowBack } from '@mui/icons-material'
+import { Alert, Box, Button, IconButton, Skeleton, Snackbar, Typography } from '@mui/material'
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
 import CompleteActionDialog from '../components/dialogs/CompleteActionDialog'
 import ConfirmDeleteDialog from '../components/dialogs/ConfirmDeleteDialog'
 import ActionForm, { type ActionFormContext } from '../components/forms/ActionForm'
 import DeviceForm from '../components/forms/DeviceForm'
-import CategoryIcon from '../components/scenes/CategoryIcon'
+import ActionListSection from '../components/scenes/ActionListSection'
+import DeviceInfoPanel from '../components/scenes/DeviceInfoPanel'
 import NextActionCard from '../components/scenes/NextActionCard'
 import { useAuth } from '../hooks/useAuth'
 import { useDeleteAction } from '../hooks/useDeleteAction'
@@ -27,15 +15,8 @@ import { useDeleteDevice } from '../hooks/useDeleteDevice'
 import { useDevice } from '../hooks/useDevice'
 import { useDeviceActions } from '../hooks/useDeviceActions'
 import { useHall } from '../hooks/useHall'
-import type { Device, DeviceCategory, MaintenanceAction } from '../model/types'
-import { getUrgency, splitDeviceActions } from '../utils/actionUtils'
-import { formatDeadlineShort } from '../utils/dateUtils'
-
-const CATEGORY_LABELS: Record<DeviceCategory, string> = {
-  machine: 'Machine',
-  band: 'Band',
-  lamp: 'Lamp',
-}
+import type { MaintenanceAction } from '../model/types'
+import { splitDeviceActions } from '../utils/actionUtils'
 
 type SnackbarState = { open: boolean; message: string; severity: 'success' | 'error' }
 
@@ -136,15 +117,6 @@ export default function DeviceDetailPage() {
         <Typography variant="h5" component="h1" sx={{ fontWeight: 700, flexGrow: 1 }}>
           {device ? device.name : <Skeleton width={200} />}
         </Typography>
-        {device && (
-          <Button
-            variant="outlined"
-            startIcon={<MyLocation />}
-            onClick={() => navigate(`/halls/${device.hallId}?highlight=${device.id}`)}
-          >
-            Toon op plattegrond
-          </Button>
-        )}
       </Box>
 
       {isLoading && (
@@ -173,6 +145,7 @@ export default function DeviceDetailPage() {
             device={device}
             hallName={hallQuery.data?.name}
             isAdmin={isAdmin}
+            onShowOnMap={() => navigate(`/halls/${device.hallId}?highlight=${device.id}`)}
             onEdit={() => setDeviceFormOpen(true)}
             onDelete={() => setDeletingDevice(true)}
           />
@@ -193,44 +166,22 @@ export default function DeviceDetailPage() {
             onDelete={setDeletingAction}
           />
 
-          {otherOpenActions.length > 0 && (
-            <Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1.5 }}>
-                Overige open acties ({otherOpenActions.length})
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {otherOpenActions.map((action) => (
-                  <OpenActionRow
-                    key={action.id}
-                    action={action}
-                    onMarkDone={handleMarkDone}
-                    isAdmin={isAdmin}
-                    onEdit={handleEditAction}
-                    onDelete={setDeletingAction}
-                  />
-                ))}
-              </Box>
-            </Box>
-          )}
+          <ActionListSection
+            title="Overige open acties"
+            actions={otherOpenActions}
+            variant="open"
+            onMarkDone={handleMarkDone}
+            onEdit={isAdmin ? handleEditAction : undefined}
+            onDelete={isAdmin ? setDeletingAction : undefined}
+          />
 
-          {executedActions.length > 0 && (
-            <Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1.5 }}>
-                Uitgevoerde acties ({executedActions.length})
-              </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {executedActions.map((action) => (
-                  <ExecutedActionRow
-                    key={action.id}
-                    action={action}
-                    isAdmin={isAdmin}
-                    onEdit={handleEditAction}
-                    onDelete={setDeletingAction}
-                  />
-                ))}
-              </Box>
-            </Box>
-          )}
+          <ActionListSection
+            title="Uitgevoerde acties"
+            actions={executedActions}
+            variant="uitgevoerd"
+            onEdit={isAdmin ? handleEditAction : undefined}
+            onDelete={isAdmin ? setDeletingAction : undefined}
+          />
         </Box>
       )}
 
@@ -282,224 +233,5 @@ export default function DeviceDetailPage() {
         </Alert>
       </Snackbar>
     </Box>
-  )
-}
-
-function DeviceInfoPanel({
-  device,
-  hallName,
-  isAdmin,
-  onEdit,
-  onDelete,
-}: {
-  device: Device
-  hallName: string | undefined
-  isAdmin: boolean
-  onEdit: () => void
-  onDelete: () => void
-}) {
-  return (
-    <Paper
-      elevation={0}
-      variant="outlined"
-      sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, p: 3, borderRadius: '12px', borderColor: 'divider' }}
-    >
-      <Avatar sx={{ width: 56, height: 56, bgcolor: 'rgba(21,101,192,0.1)', color: 'primary.main' }}>
-        <CategoryIcon category={device.category} fontSize="medium" />
-      </Avatar>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, minWidth: 0 }}>
-        <Typography variant="h6" sx={{ fontFamily: '"Archivo", sans-serif', fontWeight: 700 }}>
-          {device.name}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {CATEGORY_LABELS[device.category]}
-          {hallName ? ` · ${hallName}` : ''}
-        </Typography>
-        {device.serialNumber && (
-          <Typography variant="body2" color="text.secondary">
-            Serienummer: {device.serialNumber}
-          </Typography>
-        )}
-        {device.description && <Typography variant="body2">{device.description}</Typography>}
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-          Positie: x {device.x}, y {device.y}
-        </Typography>
-      </Box>
-      {isAdmin && (
-        <Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0, ml: 'auto' }}>
-          <Tooltip title="Apparaat bewerken">
-            <IconButton size="small" onClick={onEdit} aria-label="Apparaat bewerken">
-              <Edit fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Apparaat verwijderen">
-            <IconButton size="small" color="error" onClick={onDelete} aria-label="Apparaat verwijderen">
-              <Delete fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      )}
-    </Paper>
-  )
-}
-
-function OpenActionRow({
-  action,
-  onMarkDone,
-  isAdmin,
-  onEdit,
-  onDelete,
-}: {
-  action: MaintenanceAction
-  onMarkDone: (action: MaintenanceAction) => void
-  isAdmin: boolean
-  onEdit: (action: MaintenanceAction) => void
-  onDelete: (action: MaintenanceAction) => void
-}) {
-  const theme = useTheme()
-  const urgency = getUrgency(action)
-  const accentColor =
-    urgency === 'overdue' ? theme.palette.error.main : urgency === 'dueSoon' ? theme.palette.warning.main : 'transparent'
-
-  return (
-    <Paper
-      elevation={0}
-      sx={{
-        display: 'flex',
-        alignItems: 'stretch',
-        overflow: 'hidden',
-        borderRadius: '10px',
-        border: '1px solid',
-        borderColor: 'divider',
-      }}
-    >
-      <Box sx={{ width: 4, flexShrink: 0, backgroundColor: accentColor }} />
-      <Box
-        sx={{
-          display: 'flex',
-          flex: 1,
-          minWidth: 0,
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          flexDirection: { xs: 'column', sm: 'row' },
-          gap: { xs: 1, sm: 2 },
-          py: 1.5,
-          px: 2,
-        }}
-      >
-        <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography sx={{ fontWeight: 600, textTransform: 'capitalize' }} noWrap>
-            {action.type} · {formatDeadlineShort(action.deadline)}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {action.description}
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            width: { xs: '100%', sm: 'auto' },
-            justifyContent: { xs: 'space-between', sm: 'flex-end' },
-          }}
-        >
-          {urgency === 'overdue' && <Chip label="VERLOPEN" size="small" color="error" />}
-          {urgency === 'dueSoon' && <Chip label="< 24 U" size="small" color="warning" />}
-          {urgency === 'normal' && <Chip label="OPEN" size="small" variant="outlined" />}
-          <Tooltip title="Markeer als uitgevoerd">
-            <IconButton
-              size="small"
-              color="primary"
-              onClick={() => onMarkDone(action)}
-              aria-label={`Markeer ${action.type} als uitgevoerd`}
-            >
-              <Check fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          {isAdmin && (
-            <>
-              <Tooltip title="Actie bewerken">
-                <IconButton size="small" onClick={() => onEdit(action)} aria-label={`Bewerk ${action.type}`}>
-                  <Edit fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Actie verwijderen">
-                <IconButton
-                  size="small"
-                  color="error"
-                  onClick={() => onDelete(action)}
-                  aria-label={`Verwijder ${action.type}`}
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
-        </Box>
-      </Box>
-    </Paper>
-  )
-}
-
-function ExecutedActionRow({
-  action,
-  isAdmin,
-  onEdit,
-  onDelete,
-}: {
-  action: MaintenanceAction
-  isAdmin: boolean
-  onEdit: (action: MaintenanceAction) => void
-  onDelete: (action: MaintenanceAction) => void
-}) {
-  return (
-    <Paper
-      elevation={0}
-      sx={{
-        display: 'flex',
-        alignItems: { xs: 'flex-start', sm: 'center' },
-        flexDirection: { xs: 'column', sm: 'row' },
-        gap: { xs: 1, sm: 2 },
-        borderRadius: '10px',
-        border: '1px solid',
-        borderColor: 'divider',
-        backgroundColor: 'action.hover',
-        py: 1.5,
-        px: 2,
-      }}
-    >
-      <Box sx={{ minWidth: 0, flex: 1 }}>
-        <Typography sx={{ fontWeight: 600, textTransform: 'capitalize', color: 'text.secondary' }} noWrap>
-          {action.type} · uitgevoerd op {action.executedAt ? formatDeadlineShort(action.executedAt) : '—'}
-        </Typography>
-        {action.noteAfterExecution && (
-          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
-            {action.noteAfterExecution}
-          </Typography>
-        )}
-      </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
-        <Chip label="UITGEVOERD" size="small" color="success" />
-        {isAdmin && (
-          <>
-            <Tooltip title="Actie bewerken">
-              <IconButton size="small" onClick={() => onEdit(action)} aria-label={`Bewerk ${action.type}`}>
-                <Edit fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Actie verwijderen">
-              <IconButton
-                size="small"
-                color="error"
-                onClick={() => onDelete(action)}
-                aria-label={`Verwijder ${action.type}`}
-              >
-                <Delete fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </>
-        )}
-      </Box>
-    </Paper>
   )
 }
