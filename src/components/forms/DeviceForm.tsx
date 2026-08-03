@@ -1,4 +1,13 @@
-import { useState } from 'react'
+// Every field here is a MUI component (TextField, Select), not a plain
+// <input>. react-hook-form's register() works by attaching a ref directly to
+// a native form element, but MUI components don't forward that ref to their
+// underlying <input> in a way register() can drive — they're controlled
+// components with their own value/onChange contract. Controller renders each
+// field itself and wires MUI's value/onChange to RHF's field state instead of
+// relying on an exposed DOM ref, which is why every field below uses it
+// rather than register() ("render isolation" for UI libraries without ref
+// passthrough).
+import { Controller, useForm } from 'react-hook-form'
 import {
   Box,
   Button,
@@ -12,7 +21,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  type SelectChangeEvent,
 } from '@mui/material'
 import { useCreateDevice } from '../../hooks/useCreateDevice'
 import { useUpdateDevice } from '../../hooks/useUpdateDevice'
@@ -24,6 +32,7 @@ const CATEGORY_LABELS: Record<DeviceCategory, string> = {
   lamp: 'Lamp',
 }
 
+const NAME_MAX_LENGTH = 40
 const DESCRIPTION_MAX_LENGTH = 500
 
 // Editing never reassigns a device to a different hall — its x/y are
@@ -49,10 +58,21 @@ export default function DeviceForm({ open, onClose, context, onSaved, onError }:
         {context?.mode === 'edit' ? 'Apparaat bewerken' : 'Apparaat toevoegen'}
       </DialogTitle>
       {/* Mounting fresh per context (rather than syncing via an effect) resets
-          all fields whenever a different device or a new click position comes in. */}
+          all fields whenever a different device or a new click position comes
+          in — the page always clears context to undefined between opens, so
+          this component never survives across two different contexts. */}
       {context && <DeviceFormFields context={context} onClose={onClose} onSaved={onSaved} onError={onError} />}
     </Dialog>
   )
+}
+
+interface DeviceFormValues {
+  name: string
+  category: DeviceCategory
+  x: number
+  y: number
+  serialNumber: string
+  description: string
 }
 
 function DeviceFormFields({
@@ -69,30 +89,46 @@ function DeviceFormFields({
   const isEdit = context.mode === 'edit'
   const hallId = isEdit ? context.device.hallId : context.hallId
 
-  const [name, setName] = useState(isEdit ? context.device.name : '')
-  const [category, setCategory] = useState<DeviceCategory>(isEdit ? context.device.category : 'machine')
-  const [serialNumber, setSerialNumber] = useState(isEdit ? (context.device.serialNumber ?? '') : '')
-  const [description, setDescription] = useState(isEdit ? (context.device.description ?? '') : '')
-  const [x, setX] = useState(isEdit ? context.device.x : context.x)
-  const [y, setY] = useState(isEdit ? context.device.y : context.y)
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<DeviceFormValues>({
+    mode: 'onTouched',
+    defaultValues: isEdit
+      ? {
+          name: context.device.name,
+          category: context.device.category,
+          x: context.device.x,
+          y: context.device.y,
+          serialNumber: context.device.serialNumber ?? '',
+          description: context.device.description ?? '',
+        }
+      : {
+          name: '',
+          category: 'machine',
+          x: context.x,
+          y: context.y,
+          serialNumber: '',
+          description: '',
+        },
+  })
+  const descriptionLength = watch('description').length
 
   const createDevice = useCreateDevice()
   const updateDevice = useUpdateDevice()
   const isPending = createDevice.isPending || updateDevice.isPending
 
-  const nameError = name.trim().length === 0
-  const canSubmit = !nameError && !isPending
-
-  const handleSubmit = () => {
-    if (!canSubmit) return
+  const onSubmit = (values: DeviceFormValues) => {
     const payload = {
-      name: name.trim(),
-      category,
+      name: values.name.trim(),
+      category: values.category,
       hallId,
-      x,
-      y,
-      serialNumber: serialNumber.trim() || undefined,
-      description: description.trim() || undefined,
+      x: values.x,
+      y: values.y,
+      serialNumber: values.serialNumber.trim() || undefined,
+      description: values.description.trim() || undefined,
     }
 
     const mutation = isEdit
@@ -110,62 +146,98 @@ function DeviceFormFields({
   }
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-        <TextField
-          label="Naam"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          error={nameError}
-          helperText={nameError ? 'Naam is verplicht' : ' '}
-          fullWidth
-          autoFocus
+        <Controller
+          name="name"
+          control={control}
+          rules={{ required: 'Naam is verplicht', maxLength: { value: NAME_MAX_LENGTH, message: `Maximaal ${NAME_MAX_LENGTH} tekens` } }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Naam"
+              error={Boolean(errors.name)}
+              helperText={errors.name?.message ?? `${field.value.length}/${NAME_MAX_LENGTH}`}
+              fullWidth
+              autoFocus
+            />
+          )}
         />
-        <FormControl fullWidth>
-          <InputLabel id="device-category-label">Categorie</InputLabel>
-          <Select
-            labelId="device-category-label"
-            label="Categorie"
-            value={category}
-            onChange={(event: SelectChangeEvent) => setCategory(event.target.value as DeviceCategory)}
-          >
-            {(Object.keys(CATEGORY_LABELS) as DeviceCategory[]).map((cat) => (
-              <MenuItem key={cat} value={cat}>
-                {CATEGORY_LABELS[cat]}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+
+        <Controller
+          name="category"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <FormControl fullWidth>
+              <InputLabel id="device-category-label">Categorie</InputLabel>
+              <Select {...field} labelId="device-category-label" label="Categorie">
+                {(Object.keys(CATEGORY_LABELS) as DeviceCategory[]).map((cat) => (
+                  <MenuItem key={cat} value={cat}>
+                    {CATEGORY_LABELS[cat]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        />
+
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <TextField
-            label="Positie X"
-            type="number"
-            value={x}
-            onChange={(event) => setX(Number(event.target.value))}
-            fullWidth
+          <Controller
+            name="x"
+            control={control}
+            rules={{ required: true, validate: (value) => !Number.isNaN(value) || 'Positie X moet een getal zijn' }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                onChange={(event) => field.onChange(event.target.valueAsNumber)}
+                label="Positie X"
+                type="number"
+                error={Boolean(errors.x)}
+                helperText={errors.x?.message}
+                fullWidth
+              />
+            )}
           />
-          <TextField
-            label="Positie Y"
-            type="number"
-            value={y}
-            onChange={(event) => setY(Number(event.target.value))}
-            fullWidth
+          <Controller
+            name="y"
+            control={control}
+            rules={{ required: true, validate: (value) => !Number.isNaN(value) || 'Positie Y moet een getal zijn' }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                onChange={(event) => field.onChange(event.target.valueAsNumber)}
+                label="Positie Y"
+                type="number"
+                error={Boolean(errors.y)}
+                helperText={errors.y?.message}
+                fullWidth
+              />
+            )}
           />
         </Box>
-        <TextField
-          label="Serienummer (optioneel)"
-          value={serialNumber}
-          onChange={(event) => setSerialNumber(event.target.value)}
-          fullWidth
+
+        <Controller
+          name="serialNumber"
+          control={control}
+          render={({ field }) => <TextField {...field} label="Serienummer (optioneel)" fullWidth />}
         />
-        <TextField
-          label="Omschrijving (optioneel)"
-          multiline
-          minRows={2}
-          value={description}
-          onChange={(event) => setDescription(event.target.value.slice(0, DESCRIPTION_MAX_LENGTH))}
-          helperText={`${description.length}/${DESCRIPTION_MAX_LENGTH}`}
-          fullWidth
+
+        <Controller
+          name="description"
+          control={control}
+          rules={{ maxLength: { value: DESCRIPTION_MAX_LENGTH, message: `Maximaal ${DESCRIPTION_MAX_LENGTH} tekens` } }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Omschrijving (optioneel)"
+              multiline
+              minRows={2}
+              error={Boolean(errors.description)}
+              helperText={errors.description?.message ?? `${descriptionLength}/${DESCRIPTION_MAX_LENGTH}`}
+              fullWidth
+            />
+          )}
         />
       </DialogContent>
       <DialogActions sx={{ px: 3, pb: 2 }}>
@@ -173,14 +245,14 @@ function DeviceFormFields({
           Annuleren
         </Button>
         <Button
+          type="submit"
           variant="contained"
-          onClick={handleSubmit}
-          disabled={!canSubmit}
+          disabled={isPending}
           startIcon={isPending ? <CircularProgress size={16} color="inherit" /> : undefined}
         >
           {isEdit ? 'Opslaan' : 'Toevoegen'}
         </Button>
       </DialogActions>
-    </>
+    </form>
   )
 }

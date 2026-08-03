@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import {
   Button,
   CircularProgress,
@@ -12,7 +12,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  type SelectChangeEvent,
 } from '@mui/material'
 import { useCreateAction } from '../../hooks/useCreateAction'
 import { useDevices } from '../../hooks/useDevices'
@@ -51,10 +50,22 @@ export default function ActionForm({ open, onClose, context, onSaved, onError }:
         {context?.mode === 'edit' ? 'Actie bewerken' : 'Actie toevoegen'}
       </DialogTitle>
       {/* Mounting fresh per context resets all fields whenever a different
-          action is opened, with no effect needed to sync on prop changes. */}
+          action is opened — the page always clears context to undefined
+          between opens, so reset() is never needed to sync a live prop
+          change into an already-mounted form. */}
       {context && <ActionFormFields context={context} onClose={onClose} onSaved={onSaved} onError={onError} />}
     </Dialog>
   )
+}
+
+interface ActionFormValues {
+  deviceId: string
+  type: ActionType
+  deadline: string
+  status: ActionStatus
+  executedAt: string
+  description: string
+  noteAfterExecution: string
 }
 
 function ActionFormFields({
@@ -74,46 +85,63 @@ function ActionFormFields({
   const devices = devicesQuery.data ?? []
   const halls = hallsQuery.data ?? []
 
-  const [deviceId, setDeviceId] = useState(isEdit ? context.action.deviceId : context.deviceId)
-  const [type, setType] = useState<ActionType>(isEdit ? context.action.type : 'controle')
-  const [deadline, setDeadline] = useState(isEdit ? context.action.deadline : '')
-  const [status, setStatus] = useState<ActionStatus>(isEdit ? context.action.status : 'open')
-  const [executedAt, setExecutedAt] = useState(isEdit ? (context.action.executedAt ?? '') : '')
-  const [description, setDescription] = useState(isEdit ? context.action.description : '')
-  const [noteAfterExecution, setNoteAfterExecution] = useState(
-    isEdit ? (context.action.noteAfterExecution ?? '') : '',
-  )
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm<ActionFormValues>({
+    mode: 'onTouched',
+    defaultValues: isEdit
+      ? {
+          deviceId: context.action.deviceId,
+          type: context.action.type,
+          deadline: context.action.deadline,
+          status: context.action.status,
+          executedAt: context.action.executedAt ?? '',
+          description: context.action.description,
+          noteAfterExecution: context.action.noteAfterExecution ?? '',
+        }
+      : {
+          deviceId: context.deviceId,
+          type: 'controle',
+          deadline: '',
+          status: 'open',
+          executedAt: '',
+          description: '',
+          noteAfterExecution: '',
+        },
+  })
+  const status = watch('status')
+  const description = watch('description')
 
   const createAction = useCreateAction()
   const updateAction = useUpdateAction()
   const isPending = createAction.isPending || updateAction.isPending
 
-  const descriptionError = description.trim().length === 0
-  const canSubmit = Boolean(deviceId) && Boolean(deadline) && !descriptionError && !isPending
-
-  const handleStatusChange = (event: SelectChangeEvent) => {
-    const nextStatus = event.target.value as ActionStatus
-    setStatus(nextStatus)
+  const handleStatusChange = (nextStatus: ActionStatus, onChange: (value: ActionStatus) => void) => {
+    onChange(nextStatus)
     if (nextStatus === 'open') {
       // Only makes sense alongside status 'uitgevoerd' — clear it so a
       // reopened action doesn't keep a stale execution date around.
-      setExecutedAt('')
-      setNoteAfterExecution('')
-    } else if (!executedAt) {
-      setExecutedAt(getTodayISODate())
+      setValue('executedAt', '')
+      setValue('noteAfterExecution', '')
+    } else if (!getValues('executedAt')) {
+      setValue('executedAt', getTodayISODate())
     }
   }
 
-  const handleSubmit = () => {
-    if (!canSubmit) return
+  const onSubmit = (values: ActionFormValues) => {
     const payload = {
-      deviceId,
-      type,
-      deadline,
-      status,
-      executedAt: status === 'uitgevoerd' ? executedAt || undefined : undefined,
-      description: description.trim(),
-      noteAfterExecution: status === 'uitgevoerd' ? noteAfterExecution.trim() || undefined : undefined,
+      deviceId: values.deviceId,
+      type: values.type,
+      deadline: values.deadline,
+      status: values.status,
+      executedAt: values.status === 'uitgevoerd' ? values.executedAt || undefined : undefined,
+      description: values.description.trim(),
+      noteAfterExecution: values.status === 'uitgevoerd' ? values.noteAfterExecution.trim() || undefined : undefined,
     }
 
     const mutation = isEdit
@@ -131,98 +159,133 @@ function ActionFormFields({
   }
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-        <FormControl fullWidth>
-          <InputLabel id="action-device-label">Apparaat</InputLabel>
-          <Select
-            labelId="action-device-label"
-            label="Apparaat"
-            value={deviceId}
-            onChange={(event: SelectChangeEvent) => setDeviceId(event.target.value)}
-            renderValue={(value) => devices.find((device) => device.id === value)?.name ?? ''}
-          >
-            {halls.flatMap((hall) => {
-              const hallDevices = devices.filter((device) => device.hallId === hall.id)
-              if (hallDevices.length === 0) return []
-              return [
-                <ListSubheader key={hall.id}>{hall.name}</ListSubheader>,
-                ...hallDevices.map((device) => (
-                  <MenuItem key={device.id} value={device.id}>
-                    {device.name}
-                  </MenuItem>
-                )),
-              ]
-            })}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth>
-          <InputLabel id="action-type-label">Type actie</InputLabel>
-          <Select
-            labelId="action-type-label"
-            label="Type actie"
-            value={type}
-            onChange={(event: SelectChangeEvent) => setType(event.target.value as ActionType)}
-          >
-            {(Object.keys(ACTION_TYPE_LABELS) as ActionType[]).map((actionType) => (
-              <MenuItem key={actionType} value={actionType}>
-                {ACTION_TYPE_LABELS[actionType]}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <TextField
-          label="Deadline"
-          type="date"
-          value={deadline}
-          onChange={(event) => setDeadline(event.target.value)}
-          slotProps={{ inputLabel: { shrink: true } }}
-          fullWidth
+        <Controller
+          name="deviceId"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <FormControl fullWidth>
+              <InputLabel id="action-device-label">Apparaat</InputLabel>
+              <Select
+                {...field}
+                labelId="action-device-label"
+                label="Apparaat"
+                renderValue={(value) => devices.find((device) => device.id === value)?.name ?? ''}
+              >
+                {halls.flatMap((hall) => {
+                  const hallDevices = devices.filter((device) => device.hallId === hall.id)
+                  if (hallDevices.length === 0) return []
+                  return [
+                    <ListSubheader key={hall.id}>{hall.name}</ListSubheader>,
+                    ...hallDevices.map((device) => (
+                      <MenuItem key={device.id} value={device.id}>
+                        {device.name}
+                      </MenuItem>
+                    )),
+                  ]
+                })}
+              </Select>
+            </FormControl>
+          )}
         />
 
-        <FormControl fullWidth>
-          <InputLabel id="action-status-label">Status</InputLabel>
-          <Select labelId="action-status-label" label="Status" value={status} onChange={handleStatusChange}>
-            {(Object.keys(STATUS_LABELS) as ActionStatus[]).map((actionStatus) => (
-              <MenuItem key={actionStatus} value={actionStatus}>
-                {STATUS_LABELS[actionStatus]}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <Controller
+          name="type"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <FormControl fullWidth>
+              <InputLabel id="action-type-label">Type actie</InputLabel>
+              <Select {...field} labelId="action-type-label" label="Type actie">
+                {(Object.keys(ACTION_TYPE_LABELS) as ActionType[]).map((actionType) => (
+                  <MenuItem key={actionType} value={actionType}>
+                    {ACTION_TYPE_LABELS[actionType]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        />
+
+        <Controller
+          name="deadline"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Deadline"
+              type="date"
+              error={Boolean(errors.deadline)}
+              helperText={errors.deadline ? 'Deadline is verplicht' : ' '}
+              slotProps={{ inputLabel: { shrink: true } }}
+              fullWidth
+            />
+          )}
+        />
+
+        <Controller
+          name="status"
+          control={control}
+          rules={{ required: true }}
+          render={({ field }) => (
+            <FormControl fullWidth>
+              <InputLabel id="action-status-label">Status</InputLabel>
+              <Select
+                {...field}
+                labelId="action-status-label"
+                label="Status"
+                onChange={(event) => handleStatusChange(event.target.value as ActionStatus, field.onChange)}
+              >
+                {(Object.keys(STATUS_LABELS) as ActionStatus[]).map((actionStatus) => (
+                  <MenuItem key={actionStatus} value={actionStatus}>
+                    {STATUS_LABELS[actionStatus]}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        />
 
         {status === 'uitgevoerd' && (
-          <TextField
-            label="Uitgevoerd op"
-            type="date"
-            value={executedAt}
-            onChange={(event) => setExecutedAt(event.target.value)}
-            slotProps={{ inputLabel: { shrink: true } }}
-            fullWidth
+          <Controller
+            name="executedAt"
+            control={control}
+            render={({ field }) => (
+              <TextField {...field} label="Uitgevoerd op" type="date" slotProps={{ inputLabel: { shrink: true } }} fullWidth />
+            )}
           />
         )}
 
-        <TextField
-          label="Omschrijving"
-          multiline
-          minRows={2}
-          value={description}
-          onChange={(event) => setDescription(event.target.value.slice(0, DESCRIPTION_MAX_LENGTH))}
-          error={descriptionError}
-          helperText={`${description.length}/${DESCRIPTION_MAX_LENGTH}`}
-          fullWidth
+        <Controller
+          name="description"
+          control={control}
+          rules={{
+            required: 'Omschrijving is verplicht',
+            maxLength: { value: DESCRIPTION_MAX_LENGTH, message: `Maximaal ${DESCRIPTION_MAX_LENGTH} tekens` },
+          }}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Omschrijving"
+              multiline
+              minRows={2}
+              error={Boolean(errors.description)}
+              helperText={errors.description?.message ?? `${description.length}/${DESCRIPTION_MAX_LENGTH}`}
+              fullWidth
+            />
+          )}
         />
 
         {status === 'uitgevoerd' && (
-          <TextField
-            label="Opmerking na uitvoering (optioneel)"
-            multiline
-            minRows={2}
-            value={noteAfterExecution}
-            onChange={(event) => setNoteAfterExecution(event.target.value)}
-            fullWidth
+          <Controller
+            name="noteAfterExecution"
+            control={control}
+            render={({ field }) => (
+              <TextField {...field} label="Opmerking na uitvoering (optioneel)" multiline minRows={2} fullWidth />
+            )}
           />
         )}
       </DialogContent>
@@ -231,14 +294,14 @@ function ActionFormFields({
           Annuleren
         </Button>
         <Button
+          type="submit"
           variant="contained"
-          onClick={handleSubmit}
-          disabled={!canSubmit}
+          disabled={isPending}
           startIcon={isPending ? <CircularProgress size={16} color="inherit" /> : undefined}
         >
           {isEdit ? 'Opslaan' : 'Toevoegen'}
         </Button>
       </DialogActions>
-    </>
+    </form>
   )
 }

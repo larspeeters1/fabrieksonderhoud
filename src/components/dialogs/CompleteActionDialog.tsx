@@ -57,6 +57,10 @@ function CompleteActionForm({
   onCompleted: () => void
   onError: () => void
 }) {
+  // Deliberately not on react-hook-form: this is a single optional textarea
+  // with no validation rules, so useForm/Controller would add form
+  // machinery (state, resolver, register wiring) without replacing anything
+  // more than a single useState call already does.
   const [note, setNote] = useState('')
   const { mutate, isPending } = useCompleteAction()
 
