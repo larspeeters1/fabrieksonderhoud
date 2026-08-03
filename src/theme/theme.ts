@@ -1,35 +1,40 @@
 import { createTheme, type PaletteMode } from '@mui/material/styles'
 
+interface BlueprintPalette {
+  surface: string
+  panel: string
+  panelBorder: string
+  panelBorderHover: string
+  gridLine: string
+  appBar: string
+  urgentText: string
+  mutedIndicator: string
+  mutedText: string
+}
+
 declare module '@mui/material/styles' {
   interface Palette {
-    siteMap: {
-      background: string
-      panel: string
-      panelBorder: string
-      panelBorderHover: string
-      gridLine: string
-    }
+    blueprint: BlueprintPalette
   }
   interface PaletteOptions {
-    siteMap?: {
-      background: string
-      panel: string
-      panelBorder: string
-      panelBorderHover: string
-      gridLine: string
-    }
+    blueprint?: BlueprintPalette
   }
 }
 
-// The site map and hall floor plan are deliberately dark in both light and
-// dark mode — they're a "monitor" surface (a blueprint/glass display), not
-// regular page content, so this palette never changes with the theme mode.
-const SITE_MAP_PALETTE = {
-  background: '#111C2B',
+// The site map, hall floor plan and app bar are deliberately dark in both
+// light and dark mode — they're a "monitor" surface (a blueprint/glass
+// display), not regular page content, so this palette never changes with
+// the theme mode.
+const BLUEPRINT_PALETTE: BlueprintPalette = {
+  surface: '#111C2B',
   panel: 'rgba(255,255,255,0.06)',
   panelBorder: 'rgba(255,255,255,0.12)',
   panelBorderHover: 'rgba(255,255,255,0.3)',
   gridLine: 'rgba(255,255,255,0.05)',
+  appBar: '#0F1B2D',
+  urgentText: '#FF6B6B',
+  mutedIndicator: 'rgba(255,255,255,0.25)',
+  mutedText: 'rgba(255,255,255,0.6)',
 }
 
 export function getTheme(mode: PaletteMode) {
@@ -60,7 +65,7 @@ export function getTheme(mode: PaletteMode) {
           : {
               default: '#F6F8FA',
             },
-      siteMap: SITE_MAP_PALETTE,
+      blueprint: BLUEPRINT_PALETTE,
     },
     typography: {
       fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',

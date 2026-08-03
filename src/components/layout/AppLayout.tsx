@@ -13,8 +13,8 @@ export default function AppLayout() {
         position="static"
         elevation={0}
         sx={{
-          backgroundColor: '#0F1B2D',
-          borderBottom: '1px solid rgba(255,255,255,0.12)',
+          backgroundColor: (theme) => theme.palette.blueprint.appBar,
+          borderBottom: (theme) => `1px solid ${theme.palette.blueprint.panelBorder}`,
         }}
       >
         <Toolbar sx={{ gap: 2 }}>

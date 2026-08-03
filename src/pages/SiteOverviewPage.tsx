@@ -113,7 +113,7 @@ function SitePlan({
       sx={{
         overflow: 'auto',
         borderRadius: '12px',
-        backgroundColor: (theme) => theme.palette.siteMap.background,
+        backgroundColor: (theme) => theme.palette.blueprint.surface,
       }}
     >
       <Box
@@ -122,7 +122,7 @@ function SitePlan({
           width: siteWidth,
           height: siteHeight,
           backgroundImage: (theme) =>
-            `linear-gradient(to right, ${theme.palette.siteMap.gridLine} 1px, transparent 1px), linear-gradient(to bottom, ${theme.palette.siteMap.gridLine} 1px, transparent 1px)`,
+            `linear-gradient(to right, ${theme.palette.blueprint.gridLine} 1px, transparent 1px), linear-gradient(to bottom, ${theme.palette.blueprint.gridLine} 1px, transparent 1px)`,
           backgroundSize: '40px 40px',
         }}
       >

@@ -14,7 +14,6 @@ const MARGIN_TOP = 50
 const MARGIN_BOTTOM = 90
 const MIN_HEIGHT = 320
 const CHIP_SIZE = 44
-const URGENT_RED = '#FF6B6B'
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
@@ -58,7 +57,7 @@ export default function HallFloorPlan({
       sx={{
         overflow: 'auto',
         borderRadius: '12px',
-        backgroundColor: (theme) => theme.palette.siteMap.background,
+        backgroundColor: (theme) => theme.palette.blueprint.surface,
       }}
     >
       <Box
@@ -68,7 +67,7 @@ export default function HallFloorPlan({
           width: canvasWidth,
           height: canvasHeight,
           backgroundImage: (theme) =>
-            `linear-gradient(to right, ${theme.palette.siteMap.gridLine} 1px, transparent 1px), linear-gradient(to bottom, ${theme.palette.siteMap.gridLine} 1px, transparent 1px)`,
+            `linear-gradient(to right, ${theme.palette.blueprint.gridLine} 1px, transparent 1px), linear-gradient(to bottom, ${theme.palette.blueprint.gridLine} 1px, transparent 1px)`,
           backgroundSize: '40px 40px',
           cursor: onCanvasClick ? 'crosshair' : 'default',
         }}
@@ -116,18 +115,18 @@ function FloorPlanDeviceChip({
   const ringColor = isHighlighted
     ? theme.palette.secondary.main
     : urgency === 'overdue'
-      ? URGENT_RED
+      ? theme.palette.blueprint.urgentText
       : urgency === 'dueSoon'
         ? theme.palette.warning.main
-        : 'rgba(255,255,255,0.25)'
+        : theme.palette.blueprint.mutedIndicator
 
   const labelColor = !action
     ? 'rgba(255,255,255,0.4)'
     : urgency === 'overdue'
-      ? URGENT_RED
+      ? theme.palette.blueprint.urgentText
       : urgency === 'dueSoon'
         ? theme.palette.warning.main
-        : 'rgba(255,255,255,0.6)'
+        : theme.palette.blueprint.mutedText
 
   const actionLabel = action ? `${action.type} · ${formatDeadlineShort(action.deadline)}` : 'geen acties binnen filters'
   const tooltipTitle = action ? `${device.name} — ${action.description}` : device.name
@@ -183,8 +182,8 @@ function FloorPlanDeviceChip({
                 ? 'floor-chip-pulse 2s ease-in-out infinite'
                 : 'none',
             '@keyframes floor-chip-pulse': {
-              '0%, 100%': { boxShadow: `0 0 0 0 ${URGENT_RED}55` },
-              '50%': { boxShadow: `0 0 0 6px ${URGENT_RED}00` },
+              '0%, 100%': { boxShadow: `0 0 0 0 ${theme.palette.blueprint.urgentText}55` },
+              '50%': { boxShadow: `0 0 0 6px ${theme.palette.blueprint.urgentText}00` },
             },
             '@keyframes floor-chip-highlight-pulse': {
               '0%, 100%': { boxShadow: `0 0 0 0 ${theme.palette.secondary.main}66` },

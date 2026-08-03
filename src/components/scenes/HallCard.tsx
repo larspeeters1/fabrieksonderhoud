@@ -13,7 +13,6 @@ interface HallCardProps {
 const SMALL_HALL_WIDTH = 260
 const SMALL_HALL_HEIGHT = 200
 const MARKER_LAYER_MIN_HEIGHT = 140
-const URGENT_RED = '#FF6B6B'
 
 export default function HallCard({ hall, stats: rawStats, deviceMarkers }: HallCardProps) {
   const navigate = useNavigate()
@@ -35,15 +34,15 @@ export default function HallCard({ hall, stats: rawStats, deviceMarkers }: HallC
   const markerColor = (urgency: HallDeviceMarker['urgency']) => {
     const displayedUrgency = displayUrgency(urgency)
     return displayedUrgency === 'overdue'
-      ? URGENT_RED
+      ? theme.palette.blueprint.urgentText
       : displayedUrgency === 'dueSoon'
         ? theme.palette.warning.main
-        : 'rgba(255,255,255,0.25)'
+        : theme.palette.blueprint.mutedIndicator
   }
 
   const urgencyBlock =
     stats.overdueCount > 0
-      ? { label: 'VERLOPEN', value: stats.overdueCount, color: URGENT_RED }
+      ? { label: 'VERLOPEN', value: stats.overdueCount, color: theme.palette.blueprint.urgentText }
       : stats.dueSoonCount > 0
         ? { label: '< 24 U', value: stats.dueSoonCount, color: theme.palette.warning.main }
         : { label: 'OPEN', value: stats.openCount, color: '#fff' }
@@ -56,7 +55,7 @@ export default function HallCard({ hall, stats: rawStats, deviceMarkers }: HallC
           ? [{ label: '< 24 U', value: stats.dueSoonCount, color: theme.palette.warning.main }]
           : []),
         ...(stats.overdueCount > 0
-          ? [{ label: 'VERLOPEN', value: stats.overdueCount, color: URGENT_RED }]
+          ? [{ label: 'VERLOPEN', value: stats.overdueCount, color: theme.palette.blueprint.urgentText }]
           : []),
       ]
 
@@ -79,14 +78,14 @@ export default function HallCard({ hall, stats: rawStats, deviceMarkers }: HallC
         overflow: 'hidden',
         borderRadius: '8px',
         border: '1px solid',
-        borderColor: theme.palette.siteMap.panelBorder,
-        backgroundColor: theme.palette.siteMap.panel,
+        borderColor: theme.palette.blueprint.panelBorder,
+        backgroundColor: theme.palette.blueprint.panel,
         backdropFilter: 'blur(6px)',
         cursor: 'pointer',
         outline: 'none',
         transition: 'border-color 150ms ease, transform 150ms ease',
         '&:hover': {
-          borderColor: theme.palette.siteMap.panelBorderHover,
+          borderColor: theme.palette.blueprint.panelBorderHover,
           transform: 'translateY(-2px)',
         },
         '&:focus-visible': {
@@ -217,7 +216,7 @@ export default function HallCard({ hall, stats: rawStats, deviceMarkers }: HallC
                 fontSize: '10px',
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.6)',
+                color: theme.palette.blueprint.mutedText,
               }}
             >
               {block.label}
