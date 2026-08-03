@@ -223,6 +223,15 @@
       "x": 600,
       "y": 460,
       "serialNumber": "SN-4004"
+    },
+    {
+      "name": "stickermachine",
+      "category": "machine",
+      "hallId": "h2",
+      "x": 496,
+      "y": 101,
+      "serialNumber": "SN-422544",
+      "id": "nl0kpfRVW8w"
     }
   ],
   "actions": [
@@ -352,8 +361,10 @@
       "deviceId": "d12",
       "type": "herstelling",
       "deadline": "2026-06-20",
-      "status": "open",
-      "description": "Herstelling doseerklep"
+      "status": "uitgevoerd",
+      "description": "Herstelling doseerklep",
+      "executedAt": "2026-08-03",
+      "noteAfterExecution": "gedaan maar wel te laat"
     },
     {
       "id": "a31",
@@ -496,6 +507,14 @@
       "deadline": "2026-09-01",
       "status": "open",
       "description": "Herstelling compressorunit klimaat"
+    },
+    {
+      "deviceId": "d12",
+      "type": "vervanging",
+      "deadline": "2026-08-22",
+      "status": "open",
+      "description": "ketting vervangen",
+      "id": "XVqVggKr_Og"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

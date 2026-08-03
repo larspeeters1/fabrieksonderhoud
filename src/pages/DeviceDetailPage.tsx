@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowBack, Check, MyLocation } from '@mui/icons-material'
+import { Add, ArrowBack, Check, Delete, Edit, MyLocation } from '@mui/icons-material'
 import {
   Alert,
   Avatar,
@@ -16,8 +16,14 @@ import {
 } from '@mui/material'
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom'
 import CompleteActionDialog from '../components/dialogs/CompleteActionDialog'
+import ConfirmDeleteDialog from '../components/dialogs/ConfirmDeleteDialog'
+import ActionForm, { type ActionFormContext } from '../components/forms/ActionForm'
+import DeviceForm from '../components/forms/DeviceForm'
 import CategoryIcon from '../components/scenes/CategoryIcon'
 import NextActionCard from '../components/scenes/NextActionCard'
+import { useAuth } from '../hooks/useAuth'
+import { useDeleteAction } from '../hooks/useDeleteAction'
+import { useDeleteDevice } from '../hooks/useDeleteDevice'
 import { useDevice } from '../hooks/useDevice'
 import { useDeviceActions } from '../hooks/useDeviceActions'
 import { useHall } from '../hooks/useHall'
@@ -36,6 +42,8 @@ type SnackbarState = { open: boolean; message: string; severity: 'success' | 'er
 export default function DeviceDetailPage() {
   const { deviceId } = useParams<{ deviceId: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'beheerder'
 
   const deviceQuery = useDevice(deviceId)
   const actionsQuery = useDeviceActions(deviceId)
@@ -67,6 +75,44 @@ export default function DeviceDetailPage() {
       severity: 'error',
     })
   const handleSnackbarClose = () => setSnackbar((prev) => ({ ...prev, open: false }))
+
+  // Device edit/delete (US7) — admin only.
+  const [deviceFormOpen, setDeviceFormOpen] = useState(false)
+  const [deletingDevice, setDeletingDevice] = useState(false)
+  const deleteDeviceMutation = useDeleteDevice()
+
+  const handleFormSaved = (message: string) => setSnackbar({ open: true, message, severity: 'success' })
+  const handleFormError = (message: string) => setSnackbar({ open: true, message, severity: 'error' })
+
+  const handleDeleteDeviceConfirm = () => {
+    if (!device) return
+    deleteDeviceMutation.mutate(device.id, {
+      onSuccess: () => navigate(`/halls/${device.hallId}`),
+      onError: () => setSnackbar({ open: true, message: 'Apparaat verwijderen is mislukt. Probeer opnieuw.', severity: 'error' }),
+    })
+  }
+
+  // Action CRUD (US8) — admin only. The existing "markeer als uitgevoerd"
+  // flow above (completingAction/CompleteActionDialog) is untouched; this is
+  // the separate manual variant for full edit/delete/create.
+  const [actionFormContext, setActionFormContext] = useState<ActionFormContext | undefined>(undefined)
+  const [deletingAction, setDeletingAction] = useState<MaintenanceAction | undefined>(undefined)
+  const deleteActionMutation = useDeleteAction()
+
+  const handleAddAction = () => device && setActionFormContext({ mode: 'create', deviceId: device.id })
+  const handleEditAction = (action: MaintenanceAction) => setActionFormContext({ mode: 'edit', action })
+  const handleActionFormClose = () => setActionFormContext(undefined)
+
+  const handleDeleteActionConfirm = () => {
+    if (!deletingAction) return
+    deleteActionMutation.mutate(deletingAction.id, {
+      onSuccess: () => {
+        setSnackbar({ open: true, message: 'Actie verwijderd', severity: 'success' })
+        setDeletingAction(undefined)
+      },
+      onError: () => setSnackbar({ open: true, message: 'Actie verwijderen is mislukt. Probeer opnieuw.', severity: 'error' }),
+    })
+  }
 
   if (!isLoading && !error && !device) {
     return (
@@ -123,9 +169,29 @@ export default function DeviceDetailPage() {
 
       {!isLoading && !error && device && (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <DeviceInfoPanel device={device} hallName={hallQuery.data?.name} />
+          <DeviceInfoPanel
+            device={device}
+            hallName={hallQuery.data?.name}
+            isAdmin={isAdmin}
+            onEdit={() => setDeviceFormOpen(true)}
+            onDelete={() => setDeletingDevice(true)}
+          />
 
-          <NextActionCard action={nextAction} onMarkDone={handleMarkDone} />
+          {isAdmin && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button variant="outlined" startIcon={<Add />} onClick={handleAddAction}>
+                Actie toevoegen
+              </Button>
+            </Box>
+          )}
+
+          <NextActionCard
+            action={nextAction}
+            onMarkDone={handleMarkDone}
+            isAdmin={isAdmin}
+            onEdit={handleEditAction}
+            onDelete={setDeletingAction}
+          />
 
           {otherOpenActions.length > 0 && (
             <Box>
@@ -134,7 +200,14 @@ export default function DeviceDetailPage() {
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 {otherOpenActions.map((action) => (
-                  <OpenActionRow key={action.id} action={action} onMarkDone={handleMarkDone} />
+                  <OpenActionRow
+                    key={action.id}
+                    action={action}
+                    onMarkDone={handleMarkDone}
+                    isAdmin={isAdmin}
+                    onEdit={handleEditAction}
+                    onDelete={setDeletingAction}
+                  />
                 ))}
               </Box>
             </Box>
@@ -147,7 +220,13 @@ export default function DeviceDetailPage() {
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 {executedActions.map((action) => (
-                  <ExecutedActionRow key={action.id} action={action} />
+                  <ExecutedActionRow
+                    key={action.id}
+                    action={action}
+                    isAdmin={isAdmin}
+                    onEdit={handleEditAction}
+                    onDelete={setDeletingAction}
+                  />
                 ))}
               </Box>
             </Box>
@@ -163,6 +242,40 @@ export default function DeviceDetailPage() {
         onError={handleError}
       />
 
+      <DeviceForm
+        open={deviceFormOpen}
+        context={device ? { mode: 'edit', device } : undefined}
+        onClose={() => setDeviceFormOpen(false)}
+        onSaved={handleFormSaved}
+        onError={handleFormError}
+      />
+
+      <ConfirmDeleteDialog
+        open={deletingDevice}
+        title="Apparaat verwijderen"
+        description={`Weet je zeker dat je "${device?.name}" wilt verwijderen? Alle bijhorende acties worden ook verwijderd.`}
+        isPending={deleteDeviceMutation.isPending}
+        onCancel={() => setDeletingDevice(false)}
+        onConfirm={handleDeleteDeviceConfirm}
+      />
+
+      <ActionForm
+        open={Boolean(actionFormContext)}
+        context={actionFormContext}
+        onClose={handleActionFormClose}
+        onSaved={handleFormSaved}
+        onError={handleFormError}
+      />
+
+      <ConfirmDeleteDialog
+        open={Boolean(deletingAction)}
+        title="Actie verwijderen"
+        description={`Weet je zeker dat je de actie "${deletingAction?.description ?? ''}" wilt verwijderen?`}
+        isPending={deleteActionMutation.isPending}
+        onCancel={() => setDeletingAction(undefined)}
+        onConfirm={handleDeleteActionConfirm}
+      />
+
       <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={handleSnackbarClose}>
         <Alert severity={snackbar.severity} onClose={handleSnackbarClose} sx={{ width: '100%' }}>
           {snackbar.message}
@@ -172,7 +285,19 @@ export default function DeviceDetailPage() {
   )
 }
 
-function DeviceInfoPanel({ device, hallName }: { device: Device; hallName: string | undefined }) {
+function DeviceInfoPanel({
+  device,
+  hallName,
+  isAdmin,
+  onEdit,
+  onDelete,
+}: {
+  device: Device
+  hallName: string | undefined
+  isAdmin: boolean
+  onEdit: () => void
+  onDelete: () => void
+}) {
   return (
     <Paper
       elevation={0}
@@ -200,6 +325,20 @@ function DeviceInfoPanel({ device, hallName }: { device: Device; hallName: strin
           Positie: x {device.x}, y {device.y}
         </Typography>
       </Box>
+      {isAdmin && (
+        <Box sx={{ display: 'flex', gap: 0.5, flexShrink: 0, ml: 'auto' }}>
+          <Tooltip title="Apparaat bewerken">
+            <IconButton size="small" onClick={onEdit} aria-label="Apparaat bewerken">
+              <Edit fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Apparaat verwijderen">
+            <IconButton size="small" color="error" onClick={onDelete} aria-label="Apparaat verwijderen">
+              <Delete fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
     </Paper>
   )
 }
@@ -207,9 +346,15 @@ function DeviceInfoPanel({ device, hallName }: { device: Device; hallName: strin
 function OpenActionRow({
   action,
   onMarkDone,
+  isAdmin,
+  onEdit,
+  onDelete,
 }: {
   action: MaintenanceAction
   onMarkDone: (action: MaintenanceAction) => void
+  isAdmin: boolean
+  onEdit: (action: MaintenanceAction) => void
+  onDelete: (action: MaintenanceAction) => void
 }) {
   const theme = useTheme()
   const urgency = getUrgency(action)
@@ -271,13 +416,42 @@ function OpenActionRow({
               <Check fontSize="small" />
             </IconButton>
           </Tooltip>
+          {isAdmin && (
+            <>
+              <Tooltip title="Actie bewerken">
+                <IconButton size="small" onClick={() => onEdit(action)} aria-label={`Bewerk ${action.type}`}>
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Actie verwijderen">
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={() => onDelete(action)}
+                  aria-label={`Verwijder ${action.type}`}
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
         </Box>
       </Box>
     </Paper>
   )
 }
 
-function ExecutedActionRow({ action }: { action: MaintenanceAction }) {
+function ExecutedActionRow({
+  action,
+  isAdmin,
+  onEdit,
+  onDelete,
+}: {
+  action: MaintenanceAction
+  isAdmin: boolean
+  onEdit: (action: MaintenanceAction) => void
+  onDelete: (action: MaintenanceAction) => void
+}) {
   return (
     <Paper
       elevation={0}
@@ -304,7 +478,28 @@ function ExecutedActionRow({ action }: { action: MaintenanceAction }) {
           </Typography>
         )}
       </Box>
-      <Chip label="UITGEVOERD" size="small" color="success" />
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+        <Chip label="UITGEVOERD" size="small" color="success" />
+        {isAdmin && (
+          <>
+            <Tooltip title="Actie bewerken">
+              <IconButton size="small" onClick={() => onEdit(action)} aria-label={`Bewerk ${action.type}`}>
+                <Edit fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Actie verwijderen">
+              <IconButton
+                size="small"
+                color="error"
+                onClick={() => onDelete(action)}
+                aria-label={`Verwijder ${action.type}`}
+              >
+                <Delete fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </>
+        )}
+      </Box>
     </Paper>
   )
 }

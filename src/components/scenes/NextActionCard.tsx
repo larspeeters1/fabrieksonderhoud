@@ -1,5 +1,5 @@
-import { Check, CheckCircleOutlined } from '@mui/icons-material'
-import { Box, Button, Chip, Paper, Typography, useTheme } from '@mui/material'
+import { Check, CheckCircleOutlined, Delete, Edit } from '@mui/icons-material'
+import { Box, Button, Chip, IconButton, Paper, Tooltip, Typography, useTheme } from '@mui/material'
 import { useUrgencyDisplay } from '../../hooks/useUrgencyDisplay'
 import type { MaintenanceAction } from '../../model/types'
 import { formatDeadlineLong } from '../../utils/dateUtils'
@@ -7,9 +7,12 @@ import { formatDeadlineLong } from '../../utils/dateUtils'
 interface NextActionCardProps {
   action: MaintenanceAction | undefined
   onMarkDone: (action: MaintenanceAction) => void
+  isAdmin?: boolean
+  onEdit?: (action: MaintenanceAction) => void
+  onDelete?: (action: MaintenanceAction) => void
 }
 
-export default function NextActionCard({ action, onMarkDone }: NextActionCardProps) {
+export default function NextActionCard({ action, onMarkDone, isAdmin = false, onEdit, onDelete }: NextActionCardProps) {
   const theme = useTheme()
   const { urgencyOf } = useUrgencyDisplay()
 
@@ -68,9 +71,30 @@ export default function NextActionCard({ action, onMarkDone }: NextActionCardPro
         >
           Eerstvolgende open actie
         </Typography>
-        {urgency === 'overdue' && <Chip label="VERLOPEN" size="small" color="error" />}
-        {urgency === 'dueSoon' && <Chip label="< 24 U" size="small" color="warning" />}
-        {urgency === 'normal' && <Chip label="OPEN" size="small" variant="outlined" />}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {urgency === 'overdue' && <Chip label="VERLOPEN" size="small" color="error" />}
+          {urgency === 'dueSoon' && <Chip label="< 24 U" size="small" color="warning" />}
+          {urgency === 'normal' && <Chip label="OPEN" size="small" variant="outlined" />}
+          {isAdmin && (
+            <>
+              <Tooltip title="Actie bewerken">
+                <IconButton size="small" onClick={() => onEdit?.(action)} aria-label={`Bewerk ${action.type}`}>
+                  <Edit fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Actie verwijderen">
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={() => onDelete?.(action)}
+                  aria-label={`Verwijder ${action.type}`}
+                >
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
+        </Box>
       </Box>
 
       <Typography variant="h5" sx={{ fontFamily: '"Archivo", sans-serif', fontWeight: 700, textTransform: 'capitalize' }}>

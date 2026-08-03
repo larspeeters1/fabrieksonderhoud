@@ -1,0 +1,61 @@
+<svg viewBox="0 0 380 720" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <!-- telefoonkader -->
+  <rect x="0" y="0" width="380" height="720" fill="#ffffff" stroke="#333" stroke-width="2" rx="18"/>
+
+  <!-- topbalk -->
+  <rect x="2" y="2" width="376" height="50" fill="#f0f0f0" stroke="#333"/>
+  <text x="16" y="32" font-size="14">&#8592; Terug</text>
+  <text x="190" y="32" font-size="15" font-weight="bold" text-anchor="middle">Instellingen</text>
+  <circle cx="352" cy="27" r="13" fill="#fff" stroke="#333"/>
+  <text x="352" y="31" font-size="9" text-anchor="middle">user</text>
+
+  <!-- sectie 1: weergavemodus -->
+  <rect x="16" y="72" width="348" height="130" fill="#fff" stroke="#333" rx="10"/>
+  <text x="32" y="100" font-size="15" font-weight="bold">Weergavemodus</text>
+  <text x="32" y="120" font-size="11" fill="#555">Kies licht, donker of volg je systeem</text>
+  <rect x="32" y="136" width="316" height="44" fill="#fff" stroke="#333" rx="8"/>
+  <line x1="137" y1="136" x2="137" y2="180" stroke="#333"/>
+  <line x1="242" y1="136" x2="242" y2="180" stroke="#333"/>
+  <text x="84" y="163" font-size="12" text-anchor="middle">&#9728; Licht</text>
+  <rect x="139" y="138" width="101" height="40" fill="#d9d9d9" rx="6"/>
+  <text x="190" y="163" font-size="12" text-anchor="middle" font-weight="bold">&#9789; Donker</text>
+  <text x="295" y="163" font-size="12" text-anchor="middle">&#9881; Systeem</text>
+
+  <!-- sectie 2: tijdsvenster -->
+  <rect x="16" y="218" width="348" height="130" fill="#fff" stroke="#333" rx="10"/>
+  <text x="32" y="246" font-size="15" font-weight="bold">Standaard tijdsvenster</text>
+  <text x="32" y="266" font-size="11" fill="#555">Welke acties standaard zichtbaar zijn in een hal</text>
+  <rect x="32" y="282" width="316" height="44" fill="#fff" stroke="#333" rx="8"/>
+  <line x1="111" y1="282" x2="111" y2="326" stroke="#333"/>
+  <line x1="190" y1="282" x2="190" y2="326" stroke="#333"/>
+  <line x1="269" y1="282" x2="269" y2="326" stroke="#333"/>
+  <text x="71" y="309" font-size="12" text-anchor="middle">Vandaag</text>
+  <text x="150" y="309" font-size="12" text-anchor="middle">3 dagen</text>
+  <rect x="192" y="284" width="75" height="40" fill="#d9d9d9" rx="6"/>
+  <text x="229" y="309" font-size="12" text-anchor="middle" font-weight="bold">7 dagen</text>
+  <text x="308" y="309" font-size="12" text-anchor="middle">30 dagen</text>
+
+  <!-- sectie 3: urgentie -->
+  <rect x="16" y="364" width="348" height="96" fill="#fff" stroke="#333" rx="10"/>
+  <text x="32" y="392" font-size="15" font-weight="bold">Urgentie-indicaties</text>
+  <text x="32" y="412" font-size="11" fill="#555">Rode en oranje markeringen bij deadlines</text>
+  <text x="32" y="442" font-size="12">Tonen</text>
+  <!-- switch aan -->
+  <rect x="292" y="424" width="56" height="28" fill="#bcd7bc" stroke="#2e7d32" rx="14"/>
+  <circle cx="334" cy="438" r="11" fill="#2e7d32"/>
+
+  <!-- sectie 4: standaardweergave -->
+  <rect x="16" y="476" width="348" height="130" fill="#fff" stroke="#333" rx="10"/>
+  <text x="32" y="504" font-size="15" font-weight="bold">Standaardweergave hal</text>
+  <text x="32" y="524" font-size="11" fill="#555">Hoe een fabriekshal standaard opent</text>
+  <rect x="32" y="540" width="316" height="44" fill="#fff" stroke="#333" rx="8"/>
+  <line x1="190" y1="540" x2="190" y2="584" stroke="#333"/>
+  <rect x="34" y="542" width="154" height="40" fill="#d9d9d9" rx="6"/>
+  <text x="111" y="567" font-size="12" text-anchor="middle" font-weight="bold">&#128506; Plattegrond</text>
+  <text x="269" y="567" font-size="12" text-anchor="middle">&#9776; Lijst</text>
+
+  <!-- herstel + info -->
+  <text x="190" y="644" font-size="13" text-anchor="middle" fill="#555" text-decoration="underline">Herstel standaardinstellingen</text>
+  <text x="190" y="676" font-size="10" text-anchor="middle" fill="#888">Instellingen worden lokaal op dit toestel bewaard</text>
+  <text x="190" y="700" font-size="10" text-anchor="middle" fill="#888">(local storage &#183; direct toegepast, geen opslaan-knop)</text>
+</svg>

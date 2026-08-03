@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type MouseEvent } from 'react'
 import { Box, Tooltip, Typography, useTheme } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useUrgencyDisplay } from '../../hooks/useUrgencyDisplay'
@@ -16,17 +16,42 @@ const MIN_HEIGHT = 320
 const CHIP_SIZE = 44
 const URGENT_RED = '#FF6B6B'
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
 interface HallFloorPlanProps {
   hall: Hall
   devices: Device[]
   actions: MaintenanceAction[]
   filters: HallFilters
   highlightDeviceId?: string
+  // Admin-only: clicking empty canvas space places a new device there. Left
+  // undefined for non-admins, who get no click affordance at all.
+  onCanvasClick?: (position: { x: number; y: number }) => void
 }
 
-export default function HallFloorPlan({ hall, devices, actions, filters, highlightDeviceId }: HallFloorPlanProps) {
+export default function HallFloorPlan({
+  hall,
+  devices,
+  actions,
+  filters,
+  highlightDeviceId,
+  onCanvasClick,
+}: HallFloorPlanProps) {
   const canvasWidth = hall.width * FLOOR_SCALE + MARGIN_X * 2
   const canvasHeight = Math.max(hall.height * FLOOR_SCALE + MARGIN_TOP + MARGIN_BOTTOM, MIN_HEIGHT)
+
+  const handleCanvasClick = (event: MouseEvent<HTMLDivElement>) => {
+    // Only a direct click on the canvas itself counts as "empty space" — a
+    // click that bubbled up from a device chip (or its tooltip) must not
+    // also open the add-device dialog.
+    if (!onCanvasClick || event.target !== event.currentTarget) return
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = Math.round(hall.x + (event.clientX - rect.left - MARGIN_X) / FLOOR_SCALE)
+    const y = Math.round(hall.y + (event.clientY - rect.top - MARGIN_TOP) / FLOOR_SCALE)
+    onCanvasClick({ x: clamp(x, hall.x, hall.x + hall.width), y: clamp(y, hall.y, hall.y + hall.height) })
+  }
 
   return (
     <Box
@@ -37,6 +62,7 @@ export default function HallFloorPlan({ hall, devices, actions, filters, highlig
       }}
     >
       <Box
+        onClick={handleCanvasClick}
         sx={{
           position: 'relative',
           width: canvasWidth,
@@ -44,6 +70,7 @@ export default function HallFloorPlan({ hall, devices, actions, filters, highlig
           backgroundImage: (theme) =>
             `linear-gradient(to right, ${theme.palette.siteMap.gridLine} 1px, transparent 1px), linear-gradient(to bottom, ${theme.palette.siteMap.gridLine} 1px, transparent 1px)`,
           backgroundSize: '40px 40px',
+          cursor: onCanvasClick ? 'crosshair' : 'default',
         }}
       >
         {devices.map((device) => (

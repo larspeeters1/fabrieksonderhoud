@@ -6,12 +6,14 @@ import {
   Button,
   IconButton,
   Skeleton,
+  Snackbar,
   Tooltip,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import { Link as RouterLink, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 import { useHall } from '../hooks/useHall'
 import { useHallDevices } from '../hooks/useHallDevices'
 import { useActions } from '../hooks/useActions'
@@ -22,8 +24,11 @@ import { countMatchingActions, filterHallDevices, getNextOpenMatchingAction } fr
 import HallFloorPlan from '../components/scenes/HallFloorPlan'
 import DeviceListItem from '../components/scenes/DeviceListItem'
 import FilterBar from '../components/controls/FilterBar'
+import DeviceForm, { type DeviceFormContext } from '../components/forms/DeviceForm'
 import { DEFAULT_FILTERS, filtersToSearchParams, searchParamsToFilters, type HallFilters } from '../model/filters'
 import type { Device, MaintenanceAction } from '../model/types'
+
+type SnackbarState = { open: boolean; message: string; severity: 'success' | 'error' }
 
 type ViewMode = 'floorplan' | 'list'
 
@@ -31,6 +36,8 @@ export default function HallDetailPage() {
   const { hallId } = useParams<{ hallId: string }>()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'beheerder'
   const { settings } = useSettings()
   const [view, setView] = useState<ViewMode>(() => (settings.defaultHallView === 'lijst' ? 'list' : 'floorplan'))
   // The user's settings define what "default" filters means (currently just
@@ -130,6 +137,18 @@ export default function HallDetailPage() {
     navigate(`/halls/${hallId}/inspection?${filtersToSearchParams(filters).toString()}`)
   }
 
+  const [deviceFormContext, setDeviceFormContext] = useState<DeviceFormContext | undefined>(undefined)
+  const [snackbar, setSnackbar] = useState<SnackbarState>({ open: false, message: '', severity: 'success' })
+
+  const handleCanvasClick = (position: { x: number; y: number }) => {
+    if (!hallId) return
+    setDeviceFormContext({ mode: 'create', hallId, x: position.x, y: position.y })
+  }
+  const handleDeviceFormClose = () => setDeviceFormContext(undefined)
+  const handleDeviceSaved = (message: string) => setSnackbar({ open: true, message, severity: 'success' })
+  const handleDeviceError = (message: string) => setSnackbar({ open: true, message, severity: 'error' })
+  const handleSnackbarClose = () => setSnackbar((prev) => ({ ...prev, open: false }))
+
   if (!isLoading && !error && !hall) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 8 }}>
@@ -213,7 +232,10 @@ export default function HallDetailPage() {
 
           {devices.length > 0 &&
             filteredDevices.length === 0 &&
-            !(effectiveView === 'floorplan' && floorPlanDevices.length > 0) && (
+            // An admin viewing the floor plan still gets it rendered (even
+            // empty) below so they have a surface to click and add a device
+            // to — the "nothing matches" message would otherwise mask it.
+            !(effectiveView === 'floorplan' && (floorPlanDevices.length > 0 || isAdmin)) && (
               <EmptyState
                 icon={<FilterAltOff sx={{ fontSize: 48 }} />}
                 text="Geen apparaten binnen deze filters"
@@ -225,13 +247,14 @@ export default function HallDetailPage() {
               />
             )}
 
-          {floorPlanDevices.length > 0 && effectiveView === 'floorplan' && (
+          {(floorPlanDevices.length > 0 || isAdmin) && effectiveView === 'floorplan' && (
             <HallFloorPlan
               hall={hall}
               devices={floorPlanDevices}
               actions={actions}
               filters={filters}
               highlightDeviceId={highlightDeviceId}
+              onCanvasClick={isAdmin ? handleCanvasClick : undefined}
             />
           )}
 
@@ -240,6 +263,20 @@ export default function HallDetailPage() {
           )}
         </>
       )}
+
+      <DeviceForm
+        open={Boolean(deviceFormContext)}
+        context={deviceFormContext}
+        onClose={handleDeviceFormClose}
+        onSaved={handleDeviceSaved}
+        onError={handleDeviceError}
+      />
+
+      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={handleSnackbarClose}>
+        <Alert severity={snackbar.severity} onClose={handleSnackbarClose} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }
