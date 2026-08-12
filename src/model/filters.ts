@@ -25,10 +25,6 @@ const ACTION_TYPES: ActionType[] = ['controle', 'vervanging', 'herstelling']
 const STATUSES: ActionStatus[] = ['open', 'uitgevoerd']
 const TIME_WINDOWS: TimeWindow[] = [0, 3, 7, 30]
 
-// The inspection round (US5) is driven entirely by the filters encoded in
-// the URL — a refresh mid-round must reproduce the exact same filtered set.
-// These helpers are the single place that knows the query-param shape, so
-// the hall detail page (writer) and the inspection page (reader) can't drift.
 export function filtersToSearchParams(filters: HallFilters): URLSearchParams {
   const params = new URLSearchParams()
   if (filters.category) params.set('category', filters.category)

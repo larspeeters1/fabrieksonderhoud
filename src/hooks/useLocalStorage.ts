@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react'
 
-// Lazy initializer reads localStorage only once, on mount, instead of on
-// every render. Corrupt or missing data silently falls back to `initial`
-// rather than throwing during render.
 export function useLocalStorage<T>(key: string, initial: T) {
   const [value, setValue] = useState<T>(() => {
     try {

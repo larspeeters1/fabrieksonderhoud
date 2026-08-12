@@ -7,11 +7,7 @@ export function useDeleteDevice() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    // A device's maintenance actions aren't meaningful without their device,
-    // so deleting a device takes its actions with it. json-server has no
-    // cascade-delete of its own, so this removes them explicitly first,
-    // using whatever's already cached under ['actions'] rather than an
-    // extra round trip to fetch them again.
+
     mutationFn: async (deviceId: string) => {
       const actions = queryClient.getQueryData<MaintenanceAction[]>(['actions']) ?? []
       const relatedActionIds = actions.filter((action) => action.deviceId === deviceId).map((action) => action.id)

@@ -1,14 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { DEFAULT_FILTERS, type HallFilters } from '../model/filters'
-
-// `defaultFilters` is what "Reset filters" restores — normally the user's
-// settings-derived default (e.g. their preferred time window), which can
-// differ from `initialFilters` (a one-off seed, e.g. from a URL returning
-// from an inspection round).
 export function useHallFilters(initialFilters: HallFilters = DEFAULT_FILTERS, defaultFilters: HallFilters = initialFilters) {
-  // Lazy initializer: only read `initialFilters` once, on mount. This lets
-  // callers seed state from e.g. the URL (returning from an inspection
-  // round) without turning it into a continuous two-way sync.
+
   const [filters, setFilters] = useState<HallFilters>(() => initialFilters)
 
   const setFilter = useCallback(<K extends keyof HallFilters>(key: K, value: HallFilters[K]) => {
