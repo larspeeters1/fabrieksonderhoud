@@ -17,39 +17,60 @@ export default function AppLayout() {
           borderBottom: (theme) => `1px solid ${theme.palette.blueprint.panelBorder}`,
         }}
       >
-        <Toolbar sx={{ gap: 2 }}>
-          <Factory sx={{ color: 'rgba(255,255,255,0.7)' }} />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, fontWeight: 600 }}
-          >
-            PlantPuls
-          </Typography>
-          {user && (
-            <>
-              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.85)' }}>
-                {user.username}
+          <Toolbar sx={{ gap: { xs: 0.5, sm: 2 } }}>
+              <Factory sx={{ color: 'rgba(255,255,255,0.7)' }} />
+              <Typography
+                  variant="h6"
+                  component="div"
+                  noWrap
+                  sx={{
+                      flexGrow: 1,
+                      minWidth: 0,
+                      fontWeight: 600,
+                      display: { xs: 'none', sm: 'block' },
+                  }}
+              >
+                  PlantPuls
               </Typography>
-              <Chip
-                label={user.role}
-                size="small"
-                variant="outlined"
-                sx={{ color: 'rgba(255,255,255,0.85)', borderColor: 'rgba(255,255,255,0.3)' }}
-              />
-              <Tooltip title="Instellingen">
-                <IconButton color="inherit" onClick={() => navigate('/settings')} size="small">
-                  <Settings fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Uitloggen">
-                <IconButton color="inherit" onClick={logout} size="small">
-                  <Logout fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
-        </Toolbar>
+              {/* op xs vervangt deze spacer de verborgen titel */}
+              <Box sx={{ flexGrow: 1, display: { xs: 'block', sm: 'none' } }} />
+              {user && (
+                  <>
+                      <Typography
+                          variant="body2"
+                          noWrap
+                          sx={{
+                              color: 'rgba(255,255,255,0.85)',
+                              minWidth: 0,
+                              maxWidth: { xs: 110, sm: 'none' },
+                          }}
+                      >
+                          {user.username}
+                      </Typography>
+                      <Chip
+                          label={user.role === 'beheerder' ? 'Beheerder' : 'Medewerker'}
+                          size="small"
+                          variant="outlined"
+                          sx={{
+                              flexShrink: 0,
+                              display: { xs: 'none', sm: 'flex' },
+                              color: 'rgba(255,255,255,0.85)',
+                              borderColor: 'rgba(255,255,255,0.3)',
+                          }}
+                      />
+                      <Tooltip title="Instellingen">
+                          <IconButton color="inherit" onClick={() => navigate('/settings')} size="small" sx={{ flexShrink: 0 }}>
+                              <Settings fontSize="small" />
+                          </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Uitloggen">
+                          <IconButton color="inherit" onClick={logout} size="small" sx={{ flexShrink: 0 }}>
+                              <Logout fontSize="small" />
+                          </IconButton>
+                      </Tooltip>
+                  </>
+              )}
+          </Toolbar>
       </AppBar>
       <Container component="main" sx={{ flexGrow: 1, py: 3 }}>
         <Outlet />

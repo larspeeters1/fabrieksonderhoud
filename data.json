@@ -232,6 +232,35 @@
       "y": 101,
       "serialNumber": "SN-422544",
       "id": "nl0kpfRVW8w"
+    },
+    {
+      "name": "Vrachtwagenlaadmachine",
+      "category": "machine",
+      "hallId": "h2",
+      "x": 601,
+      "y": 189,
+      "serialNumber": "SN-254584",
+      "description": "Automatisch laden van vrachtwagen.",
+      "id": "QJptnpfL3Bk"
+    },
+    {
+      "name": "reservelamp",
+      "category": "lamp",
+      "hallId": "h2",
+      "x": 406,
+      "y": 255,
+      "serialNumber": "LP-245872",
+      "description": "als de stroom uitvalt zal deze lamp aangaan",
+      "id": "zv7qLyNCxYw"
+    },
+    {
+      "name": "suiiii",
+      "category": "lamp",
+      "hallId": "h3",
+      "x": 136,
+      "y": 387,
+      "serialNumber": "LP-521",
+      "id": "9vrOex3JkoE"
     }
   ],
   "actions": [
@@ -515,6 +544,22 @@
       "status": "open",
       "description": "ketting vervangen",
       "id": "XVqVggKr_Og"
+    },
+    {
+      "deviceId": "QJptnpfL3Bk",
+      "type": "vervanging",
+      "deadline": "2026-08-10",
+      "status": "open",
+      "description": "Olie verversing",
+      "id": "ENtBRr5m6p8"
+    },
+    {
+      "deviceId": "zv7qLyNCxYw",
+      "type": "vervanging",
+      "deadline": "2027-03-22",
+      "status": "open",
+      "description": "batterij vervangen",
+      "id": "PLtgJ2zgr2s"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
