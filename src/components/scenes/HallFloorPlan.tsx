@@ -14,10 +14,6 @@ const MARGIN_BOTTOM = 90
 const MIN_HEIGHT = 320
 const CHIP_SIZE = 44
 
-// The floor plan is scaled to fit the available space instead of using a fixed
-// zoom level: on a laptop the whole hall fits on screen, while on a narrow
-// phone the scale bottoms out at MIN_SCALE and the plan scrolls (which the
-// assignment explicitly allows for floor plans).
 const MIN_SCALE = 1.2
 const MAX_SCALE = 2.5
 const MAX_PLAN_HEIGHT = 560
@@ -32,8 +28,7 @@ interface HallFloorPlanProps {
     actions: MaintenanceAction[]
     filters: HallFilters
     highlightDeviceId?: string
-    // Admin-only: clicking empty canvas space places a new device there. Left
-    // undefined for non-admins, who get no click affordance at all.
+
     onCanvasClick?: (position: { x: number; y: number }) => void
 }
 
@@ -64,9 +59,7 @@ export default function HallFloorPlan({
     const canvasHeight = Math.max(hall.height * scale + MARGIN_TOP + MARGIN_BOTTOM, MIN_HEIGHT)
 
     const handleCanvasClick = (event: MouseEvent<HTMLDivElement>) => {
-        // Only a direct click on the canvas itself counts as "empty space" — a
-        // click that bubbled up from a device chip (or its tooltip) must not
-        // also open the add-device dialog.
+
         if (!onCanvasClick || event.target !== event.currentTarget) return
         const rect = event.currentTarget.getBoundingClientRect()
         const x = Math.round(hall.x + (event.clientX - rect.left - MARGIN_X) / scale)

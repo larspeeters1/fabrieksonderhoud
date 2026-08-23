@@ -35,10 +35,7 @@ const CATEGORY_LABELS: Record<DeviceCategory, string> = {
 const NAME_MAX_LENGTH = 40
 const DESCRIPTION_MAX_LENGTH = 500
 
-// Editing never reassigns a device to a different hall — its x/y are
-// positions within that hall's floor plan, so moving halls would leave them
-// meaningless. Creating always starts from a click on a specific hall's
-// floor plan, which is where hallId/x/y come from.
+
 export type DeviceFormContext =
   | { mode: 'edit'; device: Device }
   | { mode: 'create'; hallId: string; x: number; y: number }
@@ -57,10 +54,7 @@ export default function DeviceForm({ open, onClose, context, onSaved, onError }:
       <DialogTitle sx={{ fontFamily: '"Archivo", sans-serif', fontWeight: 700 }}>
         {context?.mode === 'edit' ? 'Apparaat bewerken' : 'Apparaat toevoegen'}
       </DialogTitle>
-      {/* Mounting fresh per context (rather than syncing via an effect) resets
-          all fields whenever a different device or a new click position comes
-          in — the page always clears context to undefined between opens, so
-          this component never survives across two different contexts. */}
+      {}
       {context && <DeviceFormFields context={context} onClose={onClose} onSaved={onSaved} onError={onError} />}
     </Dialog>
   )

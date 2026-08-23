@@ -22,10 +22,7 @@ export function getUrgency(action: MaintenanceAction | undefined): Urgency | und
   return 'open'
 }
 
-// Splits one device's actions into the three buckets the detail page shows:
-// the single most urgent open action, the remaining open actions, and the
-// already-executed ones. `actions` is expected to already be scoped to a
-// single device (see useDeviceActions), so no deviceId filtering happens here.
+
 export function splitDeviceActions(actions: MaintenanceAction[]): {
   nextAction: MaintenanceAction | undefined
   otherOpenActions: MaintenanceAction[]
@@ -49,8 +46,7 @@ export function sortDevicesByUrgency(devices: Device[], actions: MaintenanceActi
   return [...devices].sort((a, b) => {
     const actionA = getNextOpenAction(a.id, actions)
     const actionB = getNextOpenAction(b.id, actions)
-    // actionA/actionB come from getNextOpenAction, so they're always an open
-    // action when present — getUrgency is guaranteed to resolve for them.
+
     const rankA = actionA ? URGENCY_RANK[getUrgency(actionA)!] : 3
     const rankB = actionB ? URGENCY_RANK[getUrgency(actionB)!] : 3
     if (rankA !== rankB) return rankA - rankB

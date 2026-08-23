@@ -40,19 +40,12 @@ export default function HallDetailPage() {
   const isAdmin = user?.role === 'beheerder'
   const { settings } = useSettings()
   const [view, setView] = useState<ViewMode>(() => (settings.defaultHallView === 'lijst' ? 'list' : 'floorplan'))
-  // The user's settings define what "default" filters means (currently just
-  // the time window); "Reset filters" restores this, not the app-wide
-  // DEFAULT_FILTERS constant.
+
   const defaultFilters = useMemo<HallFilters>(
     () => ({ ...DEFAULT_FILTERS, timeWindow: settings.defaultTimeWindow }),
     [settings.defaultTimeWindow],
   )
-  // Seeded once from the URL so filters survive a round-trip through the
-  // inspection mode ("Ronde verlaten" navigates back here with the same
-  // filters encoded as query params) without turning this page's filter
-  // state into a permanent URL sync for every click. When there's no
-  // `timeWindow` in the URL (a fresh visit, not a round-trip), fall back to
-  // the user's default time window instead of the URL parser's hardcoded one.
+
   const parsedFilters = searchParamsToFilters(searchParams)
   const initialFilters: HallFilters = searchParams.has('timeWindow')
     ? parsedFilters
@@ -60,18 +53,14 @@ export default function HallDetailPage() {
   const { filters, setFilter, resetFilters, isDefault } = useHallFilters(initialFilters, defaultFilters)
 
   const highlightDeviceId = searchParams.get('highlight') ?? undefined
-  // "Toon op plattegrond" links here with a `highlight` query param so the
-  // highlight survives a bookmark/refresh. The highlight only makes sense on
-  // the floor plan, so force that view for as long as the param is present —
-  // derived from render rather than synced via an effect.
+
   const effectiveView: ViewMode = highlightDeviceId ? 'floorplan' : view
 
   const hallQuery = useHall(hallId)
   const devicesQuery = useHallDevices(hallId)
   const actionsQuery = useActions()
 
-  // Clear the `highlight` param again after a few seconds so the effect is
-  // temporary, as the wireframe specifies.
+
   useEffect(() => {
     if (!highlightDeviceId) return
     const timer = setTimeout(() => {
@@ -102,18 +91,13 @@ export default function HallDetailPage() {
     () => countMatchingActions(filteredDevices, actions, filters),
     [filteredDevices, actions, filters],
   )
-  // The inspection round walks one action per device, so "is there anything
-  // to inspect" is about devices with a matching action, not the raw action
-  // count shown in the filter summary.
+
   const hasRoundActions = useMemo(
     () => filteredDevices.some((device) => getNextOpenMatchingAction(device.id, actions, filters) !== undefined),
     [filteredDevices, actions, filters],
   )
 
-  // A device linked to via "Toon op plattegrond" must always be visible on
-  // the floor plan, even if the user's current filters would otherwise hide
-  // it (e.g. its next action falls outside the active time window) — the
-  // highlight would otherwise silently never appear.
+
   const floorPlanDevices = useMemo(() => {
     if (!highlightDeviceId || filteredDevices.some((device) => device.id === highlightDeviceId)) {
       return filteredDevices
@@ -232,9 +216,7 @@ export default function HallDetailPage() {
 
           {devices.length > 0 &&
             filteredDevices.length === 0 &&
-            // An admin viewing the floor plan still gets it rendered (even
-            // empty) below so they have a surface to click and add a device
-            // to — the "nothing matches" message would otherwise mask it.
+
             !(effectiveView === 'floorplan' && (floorPlanDevices.length > 0 || isAdmin)) && (
               <EmptyState
                 icon={<FilterAltOff sx={{ fontSize: 48 }} />}

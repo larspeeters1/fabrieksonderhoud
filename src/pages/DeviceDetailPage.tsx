@@ -73,9 +73,6 @@ export default function DeviceDetailPage() {
     })
   }
 
-  // Action CRUD (US8) — admin only. The existing "markeer als uitgevoerd"
-  // flow above (completingAction/CompleteActionDialog) is untouched; this is
-  // the separate manual variant for full edit/delete/create.
   const [actionFormContext, setActionFormContext] = useState<ActionFormContext | undefined>(undefined)
   const [deletingAction, setDeletingAction] = useState<MaintenanceAction | undefined>(undefined)
   const deleteActionMutation = useDeleteAction()

@@ -42,19 +42,6 @@ export default function InspectionPage() {
   const actions = useMemo(() => actionsQuery.data ?? [], [actionsQuery.data])
   const dataReady = !isLoading && !error && Boolean(hall)
 
-  // The round is the list of action ids captured once, at the moment it
-  // starts (or is explicitly restarted via "Nieuwe ronde"). Deliberately NOT
-  // recomputed on every actions refetch: marking a step done would otherwise
-  // make that step's action stop matching the filters (e.g. status=open) and
-  // vanish from underneath the inspector mid-walk. Instead a completed step
-  // stays in place and simply renders as done — see InspectionStepCard.
-  //
-  // `roundToken` only changes when the inspector explicitly asks for a new
-  // round; `computedForToken` records which token the current step list was
-  // built for. Recomputing (and resetting currentIndex) happens right here
-  // during render — React's documented pattern for "derived state that
-  // should reset when an input changes" — rather than in a useEffect, which
-  // would need a redundant extra render just to apply the same update.
   const [roundToken, setRoundToken] = useState(0)
   const [computedForToken, setComputedForToken] = useState<number | null>(null)
   const [stepActionIds, setStepActionIds] = useState<string[]>([])
@@ -92,8 +79,7 @@ export default function InspectionPage() {
     [completedTimestamps],
   )
 
-  // Refs so the setTimeout auto-advance below always sees the latest steps
-  // and completion state instead of whatever was current when it was scheduled.
+
   const stepsRef = useRef(steps)
   const isStepDoneRef = useRef(isStepDone)
   useEffect(() => {
@@ -132,8 +118,7 @@ export default function InspectionPage() {
   const goNext = useCallback(() => setCurrentIndex((i) => Math.min(steps.length - 1, i + 1)), [steps.length])
 
   useEffect(() => {
-    // While the complete-action dialog is open, its note field owns arrow
-    // keys for cursor movement — don't steal them for step navigation.
+
     if (completingAction) return
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'ArrowLeft') goPrev()

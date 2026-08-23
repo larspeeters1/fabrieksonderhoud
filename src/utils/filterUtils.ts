@@ -33,25 +33,14 @@ export function getNextMatchingAction(
 ): MaintenanceAction | undefined {
   const matching = getMatchingActions(deviceId, actions, filters)
 
-  // Open actions always win, regardless of deadline — an old executed action
-  // must never crowd out a still-open one. getMatchingActions already sorts
-  // by deadline ascending, so the first open entry is the one with the
-  // earliest deadline (US2).
+
   const nextOpen = matching.find((action) => action.status === 'open')
   if (nextOpen) return nextOpen
 
-  // Nothing open left: fall back to the most recently executed action.
-  // Deadlines and executedAt are both ISO dates (YYYY-MM-DD), so plain
-  // string comparison already sorts them chronologically.
   return [...matching].sort((a, b) => (b.executedAt ?? b.deadline).localeCompare(a.executedAt ?? a.deadline))[0]
 }
 
-// US5's inspection round only ever walks actions that still need to happen —
-// "de eerstvolgende open actie die aan de actieve filters voldoet" — whereas
-// getNextMatchingAction above deliberately includes executed actions too (it
-// backs the hall detail chips, which show what an action *was* even once
-// done). Kept as a separate function rather than a parameter so neither
-// caller has to reason about a flag it doesn't need.
+
 export function getNextOpenMatchingAction(
   deviceId: string,
   actions: MaintenanceAction[],
@@ -73,12 +62,6 @@ export function deviceMatchesFilters(device: Device, actions: MaintenanceAction[
   const deviceActions = actions.filter((action) => action.deviceId === device.id)
   if (deviceActions.some((action) => actionMatchesFilters(action, filters))) return true
 
-  // A device without any actions at all can never produce a "matching
-  // action", which would permanently hide it even while just browsing with
-  // no action-related filter engaged. Keep such devices visible as long as
-  // actionType/status/highUrgencyOnly are untouched; the moment the user
-  // engages one of those, "no actions" means the device has nothing to
-  // offer for that filter, so it drops out. Kept deliberately simple.
   const noActionFilterActive = !filters.actionType && !filters.status && !filters.highUrgencyOnly
   return deviceActions.length === 0 && noActionFilterActive
 }
