@@ -24,10 +24,6 @@ interface InspectionStepCardProps {
   onShowOnMap: () => void
 }
 
-// The single focus card the inspector spends nearly all their time on —
-// this is used on a tablet/phone walking through a factory hall, so
-// everything is oversized: big text, a full-width primary button with a
-// tall tap target, generous spacing.
 export default function InspectionStepCard({
   device,
   action,
@@ -37,15 +33,19 @@ export default function InspectionStepCard({
   onShowOnMap,
 }: InspectionStepCardProps) {
   const theme = useTheme()
-  const { urgencyOf } = useUrgencyDisplay()
+  const { urgencyOf, enabled } = useUrgencyDisplay()
   const urgency = urgencyOf(action)
   const urgencyColor = isDone
-    ? theme.palette.success.main
-    : urgency === 'overdue'
-      ? theme.palette.error.main
-      : urgency === 'dueSoon'
-        ? theme.palette.warning.main
-        : theme.palette.primary.main
+    ? enabled
+      ? theme.palette.success.main
+      : theme.palette.grey[500]
+    : !enabled
+      ? theme.palette.grey[500]
+      : urgency === 'overdue'
+        ? theme.palette.error.main
+        : urgency === 'dueSoon'
+          ? theme.palette.warning.main
+          : theme.palette.primary.main
 
   const executedLabel = completedAt
     ? `Uitgevoerd om ${formatTime(completedAt)}`
@@ -92,10 +92,12 @@ export default function InspectionStepCard({
             {device.serialNumber ? ` · ${device.serialNumber}` : ''}
           </Typography>
         </Box>
-        {isDone && <Chip label="UITGEVOERD" color="success" sx={{ fontWeight: 700 }} />}
+        {isDone && <Chip label="UITGEVOERD" color={enabled ? 'success' : 'default'} sx={{ fontWeight: 700 }} />}
         {!isDone && urgency === 'overdue' && <Chip label="VERLOPEN" color="error" sx={{ fontWeight: 700 }} />}
         {!isDone && urgency === 'dueSoon' && <Chip label="< 24 U" color="warning" sx={{ fontWeight: 700 }} />}
-        {!isDone && urgency === 'normal' && <Chip label="OPEN" variant="outlined" sx={{ fontWeight: 700 }} />}
+        {!isDone && urgency === 'open' && (
+          <Chip label="OPEN" variant="outlined" color={enabled ? 'primary' : undefined} sx={{ fontWeight: 700 }} />
+        )}
       </Box>
 
       <Box sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 2.5 }}>

@@ -1,0 +1,641 @@
+{
+  "halls": [
+    {
+      "id": "h1",
+      "name": "Productiehal",
+      "x": 40,
+      "y": 40,
+      "width": 300,
+      "height": 220
+    },
+    {
+      "id": "h2",
+      "name": "Assemblagehal",
+      "x": 400,
+      "y": 40,
+      "width": 280,
+      "height": 200
+    },
+    {
+      "id": "h3",
+      "name": "Verpakkingshal",
+      "x": 40,
+      "y": 320,
+      "width": 320,
+      "height": 220
+    },
+    {
+      "id": "h4",
+      "name": "Magazijn",
+      "x": 420,
+      "y": 300,
+      "width": 260,
+      "height": 220
+    }
+  ],
+  "devices": [
+    {
+      "id": "d1",
+      "name": "Persmachine A",
+      "category": "machine",
+      "hallId": "h1",
+      "x": 95,
+      "y": 95,
+      "description": "Hydraulische pers 200 ton, productielijn 1",
+      "serialNumber": "PM-2201"
+    },
+    {
+      "id": "d2",
+      "name": "CNC-freesmachine B",
+      "category": "machine",
+      "hallId": "h1",
+      "x": 200,
+      "y": 90,
+      "description": "3-assige freesbank voor stalen behuizingen",
+      "serialNumber": "FM-104"
+    },
+    {
+      "id": "d3",
+      "name": "Lasrobot R2",
+      "category": "machine",
+      "hallId": "h1",
+      "x": 285,
+      "y": 100,
+      "description": "Puntlasrobot aan productielijn 2",
+      "serialNumber": "LR-077"
+    },
+    {
+      "id": "d4",
+      "name": "Aanvoerband 1",
+      "category": "band",
+      "hallId": "h1",
+      "x": 100,
+      "y": 185,
+      "description": "Aanvoerband grondstoffen naar de pers",
+      "serialNumber": "LB-011"
+    },
+    {
+      "id": "d5",
+      "name": "Verlichting noord",
+      "category": "lamp",
+      "hallId": "h1",
+      "x": 200,
+      "y": 195,
+      "description": "LED-armatuur noordzijde productiehal"
+    },
+    {
+      "id": "d6",
+      "name": "Verlichting zuid",
+      "category": "lamp",
+      "hallId": "h1",
+      "x": 285,
+      "y": 190,
+      "description": "LED-armatuur zuidzijde productiehal"
+    },
+    {
+      "id": "d7",
+      "name": "Assemblageband 2",
+      "category": "band",
+      "hallId": "h2",
+      "x": 455,
+      "y": 95,
+      "description": "Hoofdband assemblagelijn",
+      "serialNumber": "LB-020"
+    },
+    {
+      "id": "d8",
+      "name": "Schroefstation S1",
+      "category": "machine",
+      "hallId": "h2",
+      "x": 550,
+      "y": 90,
+      "description": "Automatisch schroefstation, 6 posities",
+      "serialNumber": "SS-310"
+    },
+    {
+      "id": "d9",
+      "name": "Testbank T4",
+      "category": "machine",
+      "hallId": "h2",
+      "x": 630,
+      "y": 100,
+      "description": "Eindcontrole en doorloopmeting",
+      "serialNumber": "TB-400"
+    },
+    {
+      "id": "d10",
+      "name": "Werkplekverlichting",
+      "category": "lamp",
+      "hallId": "h2",
+      "x": 485,
+      "y": 180,
+      "description": "TL-armatuur boven werkbanken"
+    },
+    {
+      "id": "d11",
+      "name": "Retourband 2B",
+      "category": "band",
+      "hallId": "h2",
+      "x": 605,
+      "y": 185,
+      "description": "Retourband voor afgekeurde stukken",
+      "serialNumber": "LB-022"
+    },
+    {
+      "id": "d12",
+      "name": "Folieverpakker V1",
+      "category": "machine",
+      "hallId": "h3",
+      "x": 95,
+      "y": 375,
+      "description": "Krimpfolie-verpakkingsmachine",
+      "serialNumber": "VM-501"
+    },
+    {
+      "id": "d13",
+      "name": "Etiketteermachine",
+      "category": "machine",
+      "hallId": "h3",
+      "x": 195,
+      "y": 370,
+      "description": "Labelprinter met applicator",
+      "serialNumber": "EM-088"
+    },
+    {
+      "id": "d14",
+      "name": "Palletiseerrobot",
+      "category": "machine",
+      "hallId": "h3",
+      "x": 295,
+      "y": 380,
+      "description": "Robotarm voor het stapelen van pallets",
+      "serialNumber": "PR-015"
+    },
+    {
+      "id": "d15",
+      "name": "Afvoerband 4",
+      "category": "band",
+      "hallId": "h3",
+      "x": 100,
+      "y": 465,
+      "description": "Afvoerband richting magazijn",
+      "serialNumber": "LB-030"
+    },
+    {
+      "id": "d16",
+      "name": "Verlichting gang west",
+      "category": "lamp",
+      "hallId": "h3",
+      "x": 200,
+      "y": 470,
+      "description": "TL-armatuur gang west"
+    },
+    {
+      "id": "d17",
+      "name": "Verlichting gang oost",
+      "category": "lamp",
+      "hallId": "h3",
+      "x": 300,
+      "y": 465,
+      "description": "TL-armatuur gang oost"
+    },
+    {
+      "id": "d18",
+      "name": "Laadstation heftrucks",
+      "category": "machine",
+      "hallId": "h4",
+      "x": 475,
+      "y": 355,
+      "description": "Laadpunt voor 4 elektrische heftrucks",
+      "serialNumber": "HL-012"
+    },
+    {
+      "id": "d19",
+      "name": "Sorteerband 5",
+      "category": "band",
+      "hallId": "h4",
+      "x": 580,
+      "y": 350,
+      "description": "Sorteerband uitgaande goederen",
+      "serialNumber": "LB-040"
+    },
+    {
+      "id": "d20",
+      "name": "Rolpoort P1",
+      "category": "machine",
+      "hallId": "h4",
+      "x": 475,
+      "y": 450,
+      "description": "Elektrische rolpoort laadkade noord",
+      "serialNumber": "RP-005"
+    },
+    {
+      "id": "d21",
+      "name": "Magazijnverlichting",
+      "category": "lamp",
+      "hallId": "h4",
+      "x": 585,
+      "y": 455,
+      "description": "Hogedruk armatuur boven rekken"
+    },
+    {
+      "id": "d22",
+      "name": "Krimpwikkelaar K2",
+      "category": "machine",
+      "hallId": "h4",
+      "x": 530,
+      "y": 405,
+      "description": "Wikkelmachine voor pallets",
+      "serialNumber": "KW-202"
+    }
+  ],
+  "actions": [
+    {
+      "id": "a1",
+      "deviceId": "d1",
+      "type": "herstelling",
+      "deadline": "2026-08-12",
+      "status": "uitgevoerd",
+      "description": "Hydraulische leiding vervangen, druk valt weg bij opstart",
+      "executedAt": "2026-08-23",
+      "noteAfterExecution": "schroeven terug vast gezet"
+    },
+    {
+      "id": "a2",
+      "deviceId": "d4",
+      "type": "controle",
+      "deadline": "2026-08-19",
+      "status": "open",
+      "description": "Bandgeleiders controleren na storing van vorige week"
+    },
+    {
+      "id": "a3",
+      "deviceId": "d3",
+      "type": "vervanging",
+      "deadline": "2026-08-23",
+      "status": "uitgevoerd",
+      "description": "Laskoppen vervangen, laskwaliteit wijkt af",
+      "executedAt": "2026-08-23",
+      "noteAfterExecution": "Schroeven vervangen"
+    },
+    {
+      "id": "a4",
+      "deviceId": "d2",
+      "type": "controle",
+      "deadline": "2026-08-25",
+      "status": "uitgevoerd",
+      "description": "Dagelijkse veiligheidscontrole noodstop en lichtscherm",
+      "executedAt": "2026-08-23",
+      "noteAfterExecution": "Controle gedaan --> alles oke"
+    },
+    {
+      "id": "a5",
+      "deviceId": "d5",
+      "type": "vervanging",
+      "deadline": "2026-08-26",
+      "status": "uitgevoerd",
+      "description": "Uitgevallen LED-module vervangen",
+      "executedAt": "2026-08-23"
+    },
+    {
+      "id": "a6",
+      "deviceId": "d1",
+      "type": "controle",
+      "deadline": "2026-08-28",
+      "status": "open",
+      "description": "Maandelijkse smering hydraulisch systeem"
+    },
+    {
+      "id": "a7",
+      "deviceId": "d4",
+      "type": "vervanging",
+      "deadline": "2026-08-29",
+      "status": "open",
+      "description": "Versleten aandrijfriem vervangen"
+    },
+    {
+      "id": "a8",
+      "deviceId": "d3",
+      "type": "controle",
+      "deadline": "2026-08-30",
+      "status": "open",
+      "description": "Kalibratie lasrobot controleren"
+    },
+    {
+      "id": "a9",
+      "deviceId": "d2",
+      "type": "vervanging",
+      "deadline": "2026-09-08",
+      "status": "open",
+      "description": "Spindellagers vervangen volgens onderhoudsschema"
+    },
+    {
+      "id": "a10",
+      "deviceId": "d5",
+      "type": "controle",
+      "deadline": "2026-09-15",
+      "status": "open",
+      "description": "Lichtsterkte noordzijde meten"
+    },
+    {
+      "id": "a11",
+      "deviceId": "d3",
+      "type": "vervanging",
+      "deadline": "2026-10-09",
+      "status": "open",
+      "description": "Jaarlijkse vervanging laskabels"
+    },
+    {
+      "id": "a12",
+      "deviceId": "d6",
+      "type": "vervanging",
+      "deadline": "2026-08-05",
+      "status": "uitgevoerd",
+      "description": "Defecte LED-module zuidzijde vervangen",
+      "executedAt": "2026-08-05",
+      "noteAfterExecution": "Module vervangen, lichtsterkte gemeten en conform"
+    },
+    {
+      "id": "a13",
+      "deviceId": "d6",
+      "type": "controle",
+      "deadline": "2026-07-02",
+      "status": "uitgevoerd",
+      "description": "Kwartaalcontrole armaturen zuidzijde",
+      "executedAt": "2026-07-03"
+    },
+    {
+      "id": "a14",
+      "deviceId": "d1",
+      "type": "vervanging",
+      "deadline": "2026-07-24",
+      "status": "uitgevoerd",
+      "description": "Persplaat vervangen",
+      "executedAt": "2026-07-24",
+      "noteAfterExecution": "Nieuwe plaat type X4 geplaatst, uitlijning nagemeten"
+    },
+    {
+      "id": "a15",
+      "deviceId": "d1",
+      "type": "controle",
+      "deadline": "2026-06-26",
+      "status": "uitgevoerd",
+      "description": "Kwartaalinspectie hydrauliek",
+      "executedAt": "2026-06-29"
+    },
+    {
+      "id": "a16",
+      "deviceId": "d4",
+      "type": "controle",
+      "deadline": "2026-08-03",
+      "status": "uitgevoerd",
+      "description": "Wekelijkse bandinspectie",
+      "executedAt": "2026-08-03",
+      "noteAfterExecution": "Geen afwijkingen vastgesteld"
+    },
+    {
+      "id": "a17",
+      "deviceId": "d2",
+      "type": "herstelling",
+      "deadline": "2026-07-18",
+      "status": "uitgevoerd",
+      "description": "Koelvloeistoflek bij spindel herstellen",
+      "executedAt": "2026-07-19",
+      "noteAfterExecution": "Koppeling vervangen, lek verholpen"
+    },
+    {
+      "id": "a18",
+      "deviceId": "d7",
+      "type": "controle",
+      "deadline": "2026-08-27",
+      "status": "open",
+      "description": "Riemspanning hoofdband controleren"
+    },
+    {
+      "id": "a19",
+      "deviceId": "d9",
+      "type": "controle",
+      "deadline": "2026-08-26",
+      "status": "open",
+      "description": "Doorloopmeting testbank kalibreren"
+    },
+    {
+      "id": "a20",
+      "deviceId": "d8",
+      "type": "controle",
+      "deadline": "2026-09-02",
+      "status": "open",
+      "description": "Koppelinstellingen schroefstation verifieren"
+    },
+    {
+      "id": "a21",
+      "deviceId": "d11",
+      "type": "vervanging",
+      "deadline": "2026-09-09",
+      "status": "open",
+      "description": "Retourbandmat vervangen"
+    },
+    {
+      "id": "a22",
+      "deviceId": "d10",
+      "type": "controle",
+      "deadline": "2026-08-30",
+      "status": "open",
+      "description": "Lichtsterkte werkplekverlichting meten"
+    },
+    {
+      "id": "a23",
+      "deviceId": "d7",
+      "type": "herstelling",
+      "deadline": "2026-07-30",
+      "status": "uitgevoerd",
+      "description": "Bandgeleider opnieuw uitlijnen",
+      "executedAt": "2026-07-31",
+      "noteAfterExecution": "Geleider bijgesteld, band loopt terug centraal"
+    },
+    {
+      "id": "a24",
+      "deviceId": "d9",
+      "type": "vervanging",
+      "deadline": "2026-07-15",
+      "status": "uitgevoerd",
+      "description": "Meetsonde vervangen",
+      "executedAt": "2026-07-16",
+      "noteAfterExecution": "Sonde vervangen en opnieuw geijkt"
+    },
+    {
+      "id": "a25",
+      "deviceId": "d10",
+      "type": "vervanging",
+      "deadline": "2026-07-10",
+      "status": "uitgevoerd",
+      "description": "TL-armaturen vervangen door LED",
+      "executedAt": "2026-07-10",
+      "noteAfterExecution": "Verbruik gedaald"
+    },
+    {
+      "id": "a26",
+      "deviceId": "d13",
+      "type": "controle",
+      "deadline": "2026-08-20",
+      "status": "open",
+      "description": "Printkop reinigen en uitlijning controleren"
+    },
+    {
+      "id": "a27",
+      "deviceId": "d15",
+      "type": "vervanging",
+      "deadline": "2026-08-16",
+      "status": "open",
+      "description": "Versleten aandrijfriem afvoerband vervangen"
+    },
+    {
+      "id": "a28",
+      "deviceId": "d12",
+      "type": "vervanging",
+      "deadline": "2026-08-25",
+      "status": "open",
+      "description": "Foliemes vervangen, snijkwaliteit gaat achteruit"
+    },
+    {
+      "id": "a29",
+      "deviceId": "d14",
+      "type": "herstelling",
+      "deadline": "2026-08-29",
+      "status": "open",
+      "description": "Grijper sluit onregelmatig, pneumatiek nakijken"
+    },
+    {
+      "id": "a30",
+      "deviceId": "d16",
+      "type": "controle",
+      "deadline": "2026-08-28",
+      "status": "open",
+      "description": "Armaturen gang west nakijken op flikkering"
+    },
+    {
+      "id": "a31",
+      "deviceId": "d17",
+      "type": "vervanging",
+      "deadline": "2026-09-14",
+      "status": "open",
+      "description": "Armaturen gang oost ombouwen naar LED"
+    },
+    {
+      "id": "a32",
+      "deviceId": "d12",
+      "type": "controle",
+      "deadline": "2026-08-11",
+      "status": "uitgevoerd",
+      "description": "Reiniging en controle sealbalk",
+      "executedAt": "2026-08-11"
+    },
+    {
+      "id": "a33",
+      "deviceId": "d13",
+      "type": "herstelling",
+      "deadline": "2026-08-05",
+      "status": "uitgevoerd",
+      "description": "Sensor etiketaanvoer heraansluiten",
+      "executedAt": "2026-08-06",
+      "noteAfterExecution": "Kabelbreuk hersteld"
+    },
+    {
+      "id": "a34",
+      "deviceId": "d15",
+      "type": "controle",
+      "deadline": "2026-08-14",
+      "status": "uitgevoerd",
+      "description": "Riemspanning afvoerband bijstellen",
+      "executedAt": "2026-08-14",
+      "noteAfterExecution": "Spanning bijgesteld naar 2,4 kN"
+    },
+    {
+      "id": "a35",
+      "deviceId": "d18",
+      "type": "herstelling",
+      "deadline": "2026-08-18",
+      "status": "open",
+      "description": "Laadpunt 3 laadt niet meer, bekabeling nakijken"
+    },
+    {
+      "id": "a36",
+      "deviceId": "d20",
+      "type": "controle",
+      "deadline": "2026-08-25",
+      "status": "open",
+      "description": "Sluitmechanisme en fotocel rolpoort testen"
+    },
+    {
+      "id": "a37",
+      "deviceId": "d19",
+      "type": "controle",
+      "deadline": "2026-08-27",
+      "status": "open",
+      "description": "Sorteerarmen en sensoren afstellen"
+    },
+    {
+      "id": "a38",
+      "deviceId": "d22",
+      "type": "controle",
+      "deadline": "2026-08-28",
+      "status": "open",
+      "description": "Wikkelarm en folierem inspecteren"
+    },
+    {
+      "id": "a39",
+      "deviceId": "d21",
+      "type": "controle",
+      "deadline": "2026-09-16",
+      "status": "open",
+      "description": "Noodverlichting magazijn testen"
+    },
+    {
+      "id": "a40",
+      "deviceId": "d18",
+      "type": "controle",
+      "deadline": "2026-10-13",
+      "status": "open",
+      "description": "Jaarlijkse keuring laadinfrastructuur"
+    },
+    {
+      "id": "a41",
+      "deviceId": "d19",
+      "type": "controle",
+      "deadline": "2026-08-17",
+      "status": "uitgevoerd",
+      "description": "Sorteerband uitlijnen",
+      "executedAt": "2026-08-17"
+    },
+    {
+      "id": "a42",
+      "deviceId": "d20",
+      "type": "controle",
+      "deadline": "2026-07-28",
+      "status": "uitgevoerd",
+      "description": "Halfjaarlijkse controle rolpoort",
+      "executedAt": "2026-07-28",
+      "noteAfterExecution": "Veren gesmeerd, geen speling"
+    },
+    {
+      "id": "a43",
+      "deviceId": "d21",
+      "type": "vervanging",
+      "deadline": "2026-07-20",
+      "status": "uitgevoerd",
+      "description": "Defecte armatuur boven rek 12 vervangen",
+      "executedAt": "2026-07-21"
+    },
+    {
+      "id": "a44",
+      "deviceId": "d22",
+      "type": "controle",
+      "deadline": "2026-08-08",
+      "status": "uitgevoerd",
+      "description": "Controle folierem",
+      "executedAt": "2026-08-08",
+      "noteAfterExecution": "Remvoering binnen tolerantie"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

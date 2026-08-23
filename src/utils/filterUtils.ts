@@ -31,7 +31,19 @@ export function getNextMatchingAction(
   actions: MaintenanceAction[],
   filters: HallFilters,
 ): MaintenanceAction | undefined {
-  return getMatchingActions(deviceId, actions, filters)[0]
+  const matching = getMatchingActions(deviceId, actions, filters)
+
+  // Open actions always win, regardless of deadline — an old executed action
+  // must never crowd out a still-open one. getMatchingActions already sorts
+  // by deadline ascending, so the first open entry is the one with the
+  // earliest deadline (US2).
+  const nextOpen = matching.find((action) => action.status === 'open')
+  if (nextOpen) return nextOpen
+
+  // Nothing open left: fall back to the most recently executed action.
+  // Deadlines and executedAt are both ISO dates (YYYY-MM-DD), so plain
+  // string comparison already sorts them chronologically.
+  return [...matching].sort((a, b) => (b.executedAt ?? b.deadline).localeCompare(a.executedAt ?? a.deadline))[0]
 }
 
 // US5's inspection round only ever walks actions that still need to happen —

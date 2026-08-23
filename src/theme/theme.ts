@@ -8,6 +8,7 @@ interface BlueprintPalette {
   gridLine: string
   appBar: string
   urgentText: string
+  openText: string
   mutedIndicator: string
   mutedText: string
 }
@@ -33,6 +34,10 @@ const BLUEPRINT_PALETTE: BlueprintPalette = {
   gridLine: 'rgba(255,255,255,0.05)',
   appBar: '#0F1B2D',
   urgentText: '#FF6B6B',
+  // A lighter blue than primary.main — primary.main reads too dark against
+  // the blueprint's near-black surface, so open (non-urgent) actions get
+  // this tint instead for readability.
+  openText: '#64B5F6',
   mutedIndicator: 'rgba(255,255,255,0.25)',
   mutedText: 'rgba(255,255,255,0.6)',
 }

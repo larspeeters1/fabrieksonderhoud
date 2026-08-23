@@ -6,7 +6,7 @@ export async function getActions(): Promise<MaintenanceAction[]> {
   const response = await api.get<MaintenanceAction[]>('/actions')
   return response.data
 }
-
+//patch omda je ni de hele resource wilt veranderen enkel nodige dingen zoals status
 export async function completeAction(id: string, note?: string): Promise<MaintenanceAction> {
   const response = await api.patch<MaintenanceAction>(`/actions/${id}`, {
     status: 'uitgevoerd',
@@ -15,6 +15,7 @@ export async function completeAction(id: string, note?: string): Promise<Mainten
   })
   return response.data
 }
+
 
 export async function createAction(action: Omit<MaintenanceAction, 'id'>): Promise<MaintenanceAction> {
   const response = await api.post<MaintenanceAction>('/actions', action)

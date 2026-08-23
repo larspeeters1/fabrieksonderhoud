@@ -190,7 +190,7 @@ function DeviceFormFields({
             render={({ field }) => (
               <TextField
                 {...field}
-                onChange={(event) => field.onChange(event.target.valueAsNumber)}
+                onChange={(event) => field.onChange(event.target.value === '' ? NaN : Number(event.target.value))}
                 label="Positie X"
                 type="number"
                 error={Boolean(errors.x)}
@@ -206,7 +206,7 @@ function DeviceFormFields({
             render={({ field }) => (
               <TextField
                 {...field}
-                onChange={(event) => field.onChange(event.target.valueAsNumber)}
+                onChange={(event) => field.onChange(event.target.value === '' ? NaN : Number(event.target.value))}
                 label="Positie Y"
                 type="number"
                 error={Boolean(errors.y)}

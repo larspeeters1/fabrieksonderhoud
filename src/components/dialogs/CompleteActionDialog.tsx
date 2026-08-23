@@ -25,9 +25,7 @@ interface CompleteActionDialogProps {
   onError: () => void
 }
 
-// Reusable across US4 (device detail) and US5: callers only need to supply
-// the action to complete plus success/error callbacks for their own
-// feedback UI (e.g. a Snackbar) — this component owns the mutation itself.
+
 export default function CompleteActionDialog({
   action,
   open,
@@ -38,9 +36,7 @@ export default function CompleteActionDialog({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle sx={{ fontFamily: '"Archivo", sans-serif', fontWeight: 700 }}>Actie uitvoeren</DialogTitle>
-      {/* Mounting/unmounting this form alongside `action` naturally resets the
-          note field each time a (possibly different) action is opened, with
-          no effect required to reset local state on prop changes. */}
+      {}
       {action && <CompleteActionForm action={action} onClose={onClose} onCompleted={onCompleted} onError={onError} />}
     </Dialog>
   )
@@ -57,10 +53,7 @@ function CompleteActionForm({
   onCompleted: () => void
   onError: () => void
 }) {
-  // Deliberately not on react-hook-form: this is a single optional textarea
-  // with no validation rules, so useForm/Controller would add form
-  // machinery (state, resolver, register wiring) without replacing anything
-  // more than a single useState call already does.
+
   const [note, setNote] = useState('')
   const { mutate, isPending } = useCompleteAction()
 

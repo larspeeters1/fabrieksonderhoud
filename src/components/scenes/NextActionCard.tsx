@@ -14,7 +14,7 @@ interface NextActionCardProps {
 
 export default function NextActionCard({ action, onMarkDone, isAdmin = false, onEdit, onDelete }: NextActionCardProps) {
   const theme = useTheme()
-  const { urgencyOf } = useUrgencyDisplay()
+  const { urgencyOf, enabled } = useUrgencyDisplay()
 
   if (!action) {
     return (
@@ -40,13 +40,17 @@ export default function NextActionCard({ action, onMarkDone, isAdmin = false, on
   }
 
   const urgency = urgencyOf(action)
-  const urgencyColor =
-    urgency === 'overdue'
+  const urgencyColor = !enabled
+    ? theme.palette.grey[500]
+    : urgency === 'overdue'
       ? theme.palette.error.main
       : urgency === 'dueSoon'
         ? theme.palette.warning.main
-        : theme.palette.primary.main
-  const buttonColor = urgency === 'overdue' ? 'error' : urgency === 'dueSoon' ? 'warning' : 'primary'
+        : urgency === 'done'
+          ? theme.palette.success.main
+          : theme.palette.primary.main
+  const buttonColor =
+    urgency === 'overdue' ? 'error' : urgency === 'dueSoon' ? 'warning' : urgency === 'done' ? 'success' : 'primary'
 
   return (
     <Paper
@@ -74,7 +78,8 @@ export default function NextActionCard({ action, onMarkDone, isAdmin = false, on
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           {urgency === 'overdue' && <Chip label="VERLOPEN" size="small" color="error" />}
           {urgency === 'dueSoon' && <Chip label="< 24 U" size="small" color="warning" />}
-          {urgency === 'normal' && <Chip label="OPEN" size="small" variant="outlined" />}
+          {urgency === 'open' && <Chip label="OPEN" size="small" variant="outlined" color={enabled ? 'primary' : undefined} />}
+          {urgency === 'done' && <Chip label="UITGEVOERD" size="small" color={enabled ? 'success' : 'default'} />}
           {isAdmin && (
             <>
               <Tooltip title="Actie bewerken">

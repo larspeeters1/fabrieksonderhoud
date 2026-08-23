@@ -17,7 +17,7 @@ interface DeviceListItemProps {
 export default function DeviceListItem({ device, actions, filters }: DeviceListItemProps) {
   const theme = useTheme()
   const navigate = useNavigate()
-  const { urgencyOf } = useUrgencyDisplay()
+  const { urgencyOf, enabled } = useUrgencyDisplay()
   const nextAction = getNextMatchingAction(device.id, actions, filters)
   const urgency = urgencyOf(nextAction)
 
@@ -26,7 +26,11 @@ export default function DeviceListItem({ device, actions, filters }: DeviceListI
       ? theme.palette.error.main
       : urgency === 'dueSoon'
         ? theme.palette.warning.main
-        : 'transparent'
+        : urgency === 'done' && enabled
+          ? theme.palette.success.main
+          : urgency === 'open' && enabled
+            ? theme.palette.primary.main
+            : 'transparent'
 
   return (
     <Paper
@@ -98,8 +102,11 @@ export default function DeviceListItem({ device, actions, filters }: DeviceListI
           </Typography>
           {nextAction && urgency === 'overdue' && <Chip label="VERLOPEN" size="small" color="error" />}
           {nextAction && urgency === 'dueSoon' && <Chip label="< 24 U" size="small" color="warning" />}
-          {nextAction && urgency === 'normal' && (
-            <Chip label={nextAction.status === 'uitgevoerd' ? 'UITGEVOERD' : 'OPEN'} size="small" variant="outlined" />
+          {nextAction && urgency === 'open' && (
+            <Chip label="OPEN" size="small" variant="outlined" color={enabled ? 'primary' : undefined} />
+          )}
+          {nextAction && urgency === 'done' && (
+            <Chip label="UITGEVOERD" size="small" color={enabled ? 'success' : 'default'} />
           )}
           <ChevronRight color="action" />
         </Box>

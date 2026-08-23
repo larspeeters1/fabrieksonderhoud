@@ -49,10 +49,7 @@ export default function ActionForm({ open, onClose, context, onSaved, onError }:
       <DialogTitle sx={{ fontFamily: '"Archivo", sans-serif', fontWeight: 700 }}>
         {context?.mode === 'edit' ? 'Actie bewerken' : 'Actie toevoegen'}
       </DialogTitle>
-      {/* Mounting fresh per context resets all fields whenever a different
-          action is opened — the page always clears context to undefined
-          between opens, so reset() is never needed to sync a live prop
-          change into an already-mounted form. */}
+      {}
       {context && <ActionFormFields context={context} onClose={onClose} onSaved={onSaved} onError={onError} />}
     </Dialog>
   )
