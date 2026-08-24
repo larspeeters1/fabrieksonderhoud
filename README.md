@@ -8,57 +8,6 @@ Examenproject 2e zittijd — Toegepaste Informatica, User Interfaces 3, KdG.
 
 ---
 
-## Opstarten
-
-```bash
-npm install
-npm run backend   # JSON server op http://localhost:3000
-npm run dev       # frontend op http://localhost:5173
-```
-
-De backend draait op basis van `data.json` in de root van het project. Beide commando's
-moeten gelijktijdig draaien (twee terminalvensters).
-
-## Rollen / testgebruikers
-
-Er is geen echte authenticatie. Op het loginscherm staan twee testknoppen die een
-testgebruiker in de `AuthContext` plaatsen:
-
-| Knop | Gebruiker | Rol |
-|---|---|---|
-| Log in als onderhoudsmedewerker | Jan Peters | `onderhoudsmedewerker` |
-| Log in als beheerder | An Willems | `beheerder` |
-
-De onderhoudsmedewerker bekijkt het terrein, filtert, gebruikt de inspectiemodus en kan
-acties als uitgevoerd markeren. De beheerder kan daarnaast apparaten en onderhoudsacties
-beheren (CRUD). Uitloggen verwijdert de gebruiker terug uit de context.
-
-## Technologie
-
-- React 19 + TypeScript (functional components, strict mode)
-- Vite
-- React Router — routing met bookmarkbare detail-URL's
-- TanStack React Query — server state, mutaties en cache-invalidatie
-- Material-UI (MUI) met een eigen theme (light/dark) + Archivo/Inter
-- React Hook Form met `<Controller>` voor de MUI-formuliervelden
-- Axios
-- JSON server als gesimuleerde backend
-
-## Projectstructuur
-
-```
-src/
-├── components/   controls, dialogs, forms, layout, scenes
-├── contexts/     AuthContext, SettingsContext
-├── hooks/        query- en mutation-hooks, useAuth, useSettings, useLocalStorage
-├── model/        types, filters, settings
-├── pages/        één component per route
-├── services/     axios-instance en API-calls per resource
-├── theme/        MUI theme met design tokens
-└── utils/        pure functies (datums, filters, statistieken, looproute)
-```
-
----
 
 ## Uitdagingen & Prestaties
 
@@ -86,9 +35,6 @@ groene status.
 - De plattegronden: hallen en apparaten worden op hun werkelijke positie getoond met een
   duidelijke urgentie-indicatie, en "toon op plattegrond" licht een apparaat tijdelijk uit
   zodat het snel te lokaliseren is.
-- De inspectiemodus berekent een logische looproute op basis van de x/y-coördinaten
-  (banden van boven naar onder, afwisselend links-rechts en rechts-links) in plaats van een
-  willekeurige volgorde.
 - De instellingen werken door in de hele applicatie: thema, standaard tijdsvenster,
   urgentie-indicaties en standaardweergave van een hal.
 
@@ -119,7 +65,4 @@ Daarnaast:
 
 ## ❌ Onvoltooide / Geplande Functionaliteiten
 
-- [ ] Echte authenticatie en autorisatie (OAuth): de rolcheck gebeurt enkel in de UI en valt
-      buiten de scope van deze opdracht
-- [ ] Meerdere fabrieksterreinen (multi-tenancy)
-- [ ] Herhalende onderhoudsacties die na uitvoering automatisch een volgende actie inplannen
+alles is er
