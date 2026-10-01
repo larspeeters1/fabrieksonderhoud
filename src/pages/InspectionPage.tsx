@@ -60,6 +60,7 @@ export default function InspectionPage() {
     setCurrentIndex(0)
   }
 
+  //usememo zodat het dezelfde arrayobject blijft na renderen en iet telken een nieuw object
   const steps = useMemo<InspectionStep[]>(() => {
     return stepActionIds
       .map((actionId) => {

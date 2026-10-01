@@ -87,6 +87,8 @@ export default function HallDetailPage() {
     () => filterHallDevices(devices, actions, filters),
     [devices, actions, filters],
   )
+
+  //puur informatief
   const matchingActionsCount = useMemo(
     () => countMatchingActions(filteredDevices, actions, filters),
     [filteredDevices, actions, filters],

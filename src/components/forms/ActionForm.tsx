@@ -121,8 +121,7 @@ function ActionFormFields({
   const handleStatusChange = (nextStatus: ActionStatus, onChange: (value: ActionStatus) => void) => {
     onChange(nextStatus)
     if (nextStatus === 'open') {
-      // Only makes sense alongside status 'uitgevoerd' — clear it so a
-      // reopened action doesn't keep a stale execution date around.
+
       setValue('executedAt', '')
       setValue('noteAfterExecution', '')
     } else if (!getValues('executedAt')) {

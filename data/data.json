@@ -247,6 +247,14 @@
       "y": 405,
       "description": "Wikkelmachine voor pallets",
       "serialNumber": "KW-202"
+    },
+    {
+      "name": "Machine",
+      "category": "band",
+      "hallId": "h4",
+      "x": 572,
+      "y": 323,
+      "id": "g6VqpGegLzY"
     }
   ],
   "actions": [
@@ -478,16 +486,18 @@
       "deviceId": "d13",
       "type": "controle",
       "deadline": "2026-08-20",
-      "status": "open",
-      "description": "Printkop reinigen en uitlijning controleren"
+      "status": "uitgevoerd",
+      "description": "Printkop reinigen en uitlijning controleren",
+      "executedAt": "2026-08-24"
     },
     {
       "id": "a27",
       "deviceId": "d15",
       "type": "vervanging",
       "deadline": "2026-08-16",
-      "status": "open",
-      "description": "Versleten aandrijfriem afvoerband vervangen"
+      "status": "uitgevoerd",
+      "description": "Versleten aandrijfriem afvoerband vervangen",
+      "executedAt": "2026-08-24"
     },
     {
       "id": "a28",
@@ -555,8 +565,10 @@
       "deviceId": "d18",
       "type": "herstelling",
       "deadline": "2026-08-18",
-      "status": "open",
-      "description": "Laadpunt 3 laadt niet meer, bekabeling nakijken"
+      "status": "uitgevoerd",
+      "description": "Laadpunt 3 laadt niet meer, bekabeling nakijken",
+      "executedAt": "2026-08-25",
+      "noteAfterExecution": "uitgevoerd"
     },
     {
       "id": "a36",
@@ -635,6 +647,14 @@
       "description": "Controle folierem",
       "executedAt": "2026-08-08",
       "noteAfterExecution": "Remvoering binnen tolerantie"
+    },
+    {
+      "deviceId": "g6VqpGegLzY",
+      "type": "herstelling",
+      "deadline": "2026-09-26",
+      "status": "open",
+      "description": "iets",
+      "id": "BX-iPkwMENs"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
